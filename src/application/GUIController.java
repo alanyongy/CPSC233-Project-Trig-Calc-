@@ -29,9 +29,17 @@ public class GUIController {
     //	drawTriangle();
     }
     
+    Double validate(Double n) {
+    	return n;
+    }
+    
     void displayFormula() {
-    	String formula = Calc.calculateFormula(Double.parseDouble(hTf.getText()), Double.parseDouble(aTf.getText()), 
-    											Double.parseDouble(oTf.getText()), Double.parseDouble(tTf.getText())); 
+    	Double validatedH = validate(Double.parseDouble(hTf.getText()));
+    	Double validatedO = validate(Double.parseDouble(hTf.getText()));
+    	Double validatedA = validate(Double.parseDouble(hTf.getText()));
+    	Double validatedT = validate(Double.parseDouble(hTf.getText()));
+    	
+    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT); 
     	System.out.println(formula);
     }
 }
