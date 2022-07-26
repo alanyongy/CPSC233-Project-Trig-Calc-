@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -31,7 +32,11 @@ public class GUIController {
     
     void calculate() {
     	displayFormula();
-    //	drawTriangle();
+    	drawTriangle();
+    }
+    
+    void drawTriangle(){
+
     }
     
     void displayFormula() {
