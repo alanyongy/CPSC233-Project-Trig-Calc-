@@ -29,15 +29,23 @@ public class GUIController {
     //	drawTriangle();
     }
     
-    Double validate(Double n) {
-    	return n;
+    Double validate(String text) {
+    	int dotCount = 0;
+    	for(int i = 0; i < text.length(); i++) {
+    		if(!Character.isDigit(text.charAt(i))){
+        		if(text.charAt(i) == '.') dotCount++;
+        		else return 0.0;
+    		}
+    	}
+    	if(dotCount > 1) return 0.0;
+    	return Double.parseDouble(text);
     }
     
     void displayFormula() {
-    	Double validatedH = validate(Double.parseDouble(hTf.getText()));
-    	Double validatedO = validate(Double.parseDouble(hTf.getText()));
-    	Double validatedA = validate(Double.parseDouble(hTf.getText()));
-    	Double validatedT = validate(Double.parseDouble(hTf.getText()));
+    	Double validatedH = validate(hTf.getText());
+    	Double validatedO = validate(hTf.getText());
+    	Double validatedA = validate(hTf.getText());
+    	Double validatedT = validate(hTf.getText());
     	
     	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT); 
     	System.out.println(formula);
