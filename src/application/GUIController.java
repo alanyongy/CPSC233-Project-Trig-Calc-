@@ -28,9 +28,14 @@ public class GUIController {
     	displayFormula();
     //	drawTriangle();
     }
+    @FXML
+    void toggleAngleMode() {
+    	
+    }
     
     Double validate(String text) {
     	int dotCount = 0;
+    	if(text.isEmpty()) return 0.0;
     	for(int i = 0; i < text.length(); i++) {
     		if(!Character.isDigit(text.charAt(i))){
         		if(text.charAt(i) == '.') dotCount++;
@@ -43,11 +48,11 @@ public class GUIController {
     
     void displayFormula() {
     	Double validatedH = validate(hTf.getText());
-    	Double validatedO = validate(hTf.getText());
-    	Double validatedA = validate(hTf.getText());
-    	Double validatedT = validate(hTf.getText());
+    	Double validatedO = validate(oTf.getText());
+    	Double validatedA = validate(aTf.getText());
+    	Double validatedT = validate(tTf.getText());
     	
-    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT); 
+    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT, true); 
     	System.out.println(formula);
     }
 }
