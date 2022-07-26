@@ -1,10 +1,10 @@
 package application;
 
 import java.util.ArrayList;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -25,8 +25,10 @@ public class GUIController {
     private ToggleButton degreesToggleButton;
     @FXML
     private ToggleButton radiansToggleButton;
-    
     @FXML
+    private Canvas canvas;
+    @FXML
+    
     void calculate() {
     	displayFormula();
     //	drawTriangle();
