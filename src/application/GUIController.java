@@ -32,6 +32,17 @@ public class GUIController {
     //	drawTriangle();
     }
     
+    void displayFormula() {
+    	Double validatedH = validate(hTf.getText());
+    	Double validatedO = validate(oTf.getText());
+    	Double validatedA = validate(aTf.getText());
+    	Double validatedT = validate(tTf.getText());
+    	boolean degrees = degreesToggleButton.isSelected() ? true : false;
+    	
+    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT, degrees); 
+    	System.out.println(formula);
+    }
+    
     @FXML
     void toggleAngleMode(ActionEvent trigger) {
     	if(trigger.getSource().equals(degreesToggleButton)) {
@@ -54,15 +65,5 @@ public class GUIController {
     	}
     	if(dotCount > 1) return 0.0;
     	return Double.parseDouble(text);
-    }
-    
-    void displayFormula() {
-    	Double validatedH = validate(hTf.getText());
-    	Double validatedO = validate(oTf.getText());
-    	Double validatedA = validate(aTf.getText());
-    	Double validatedT = validate(tTf.getText());
-    	
-    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT, true); 
-    	System.out.println(formula);
     }
 }
