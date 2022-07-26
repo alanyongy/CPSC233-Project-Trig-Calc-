@@ -1,9 +1,9 @@
 package application;
 
 public class Point {
-	int x, y;
+	double x, y;
 	
-	Point(int setX, int setY){
+	Point(double setX, double setY){
 		x = setX;
 		y = setY;
 	}
