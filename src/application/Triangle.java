@@ -1,7 +1,7 @@
 package application;
 
 public class Triangle {
-	int centerX, centerY, h, o, a, pointHO, pointHA, pointOA;
+	int centerX, centerY, h, o, a;
 	
 	Triangle(int setH, int setO, int setA){
 		h = setH;
