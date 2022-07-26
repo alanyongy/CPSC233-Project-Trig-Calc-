@@ -69,8 +69,8 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                    <ToggleButton onAction="#toggleAngleMode" selected="true" text="Degrees" />
-                    <ToggleButton onAction="#toggleAngleMode" text="Radians" />
+                    <ToggleButton fx:id="degreesToggleButton" onAction="#toggleAngleMode" selected="true" text="Degrees" />
+                    <ToggleButton fx:id="radiansToggleButton" onAction="#toggleAngleMode" text="Radians" />
                   <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="280" text="Calculate" />
                </children>
             </HBox>

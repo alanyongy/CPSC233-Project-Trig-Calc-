@@ -21,16 +21,26 @@ public class GUIController {
     private TextField oTf;
     @FXML
     private TextField tTf;
-    
+    @FXML
+    private ToggleButton degreesToggleButton;
+    @FXML
+    private ToggleButton radiansToggleButton;
     
     @FXML
     void calculate() {
     	displayFormula();
     //	drawTriangle();
     }
+    
     @FXML
-    void toggleAngleMode() {
-    	
+    void toggleAngleMode(ActionEvent trigger) {
+    	if(trigger.getSource().equals(degreesToggleButton)) {
+    		radiansToggleButton.setSelected(false);
+    		degreesToggleButton.setSelected(true);
+    	} else {
+    		degreesToggleButton.setSelected(false);
+    		radiansToggleButton.setSelected(true);
+    	}
     }
     
     Double validate(String text) {
