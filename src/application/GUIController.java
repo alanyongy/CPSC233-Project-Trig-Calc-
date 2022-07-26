@@ -39,7 +39,7 @@ public class GUIController {
     	Double validatedT = validate(tTf.getText());
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
     	
-    	String formula = Calc.calculateFormula(validatedH,validatedO,validatedA,validatedT, degrees); 
+    	String formula = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
     	System.out.println(formula);
     }
     

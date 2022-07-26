@@ -1,7 +1,7 @@
 package application;
 
 public class Calc {
-	static String calculateFormula(double h, double o, double a, double t, boolean d){
+	static String solveValues(double h, double o, double a, double t, boolean d){
 		String test = "";
 		
 		if(h!=0 && o!=0) {
