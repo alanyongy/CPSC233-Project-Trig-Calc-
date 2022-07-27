@@ -59,12 +59,14 @@ public class GUIController {
 		Point h = Calc.visibleMidPoint(triangle.getHa(), triangle.getHo());
 		Point o = Calc.visibleMidPoint(triangle.getHo(), triangle.getOa());
 		Point a = Calc.visibleMidPoint(triangle.getHa(), triangle.getOa());
-		Point ha = Calc.visibleMidPoint(triangle.getHa(), triangle.getHa());
+		Point t = Calc.visibleMidPoint(triangle.getHa(), triangle.getHa());
+		
+		Calc.moveOverlappingPoints(h, o, a, t);
 		
 		gc.fillText("label", h.getX(), h.getY());
 		gc.fillText("label", o.getX(), o.getY());
 		gc.fillText("label", a.getX(), a.getY());
-		gc.fillText("label", ha.getX(), ha.getY());
+		gc.fillText("label", t.getX(), t.getY());
 	}
    
     void displayFormula() {

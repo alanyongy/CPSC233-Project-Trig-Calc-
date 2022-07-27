@@ -58,6 +58,22 @@ public class Calc {
 	static Point visibleMidPoint(Point p1, Point p2) {
 		Point midPoint = new Point((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2);
 		if (midPoint.getY() < 10) midPoint.setY(10);
+		if (midPoint.getX() > 310) midPoint.setX(310);
 		return midPoint;
+	}
+	
+	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {
+		Point[] p = {h,o,a,t};
+		int marginY = 15;
+		int marginX = 50;
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				if(j==i) continue;
+				if(Math.abs(p[i].getY() - p[j].getY()) < marginY && Math.abs(p[i].getX() - p[j].getX()) < marginX) {
+					if(p[i].getY() <= p[j].getY()) p[j].setY(p[j].getY() + marginY + 2 - (p[j].getY()-p[i].getY()));
+					else p[i].setY(p[i].getY() + marginY + 2 - (p[i].getY()-p[j].getY()));
+				}
+			}
+		}
 	}
 }
