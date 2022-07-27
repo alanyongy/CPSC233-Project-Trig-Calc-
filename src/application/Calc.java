@@ -23,7 +23,7 @@ public class Calc {
 			o = h*Math.sin(t);
 			formula += "o = h*sin(θ)";
 			formula += "\nRearranged from: sinθ = o/h";
-			a = h*Math.cos(a);
+			a = h*Math.cos(t);
 			formula += "\n\nFormula Used: a = h*cos(θ)";
 			formula += "\nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
