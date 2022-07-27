@@ -20,8 +20,8 @@ public class Triangle {
 		double maxH = 180;
 		double scale = 1;
 		//which side length is closer to its side of the window's maximum size
-		if(Math.abs(o)/maxH > Math.abs(a)/maxW) scale = maxH / o;
-		else scale = maxW / a;
+		if(Math.abs(o)/maxH > Math.abs(a)/maxW) scale = maxH / Math.abs(o);
+		else scale = maxW / Math.abs(a);
 		o *= scale;
 		a *= scale;
 		h = Math.sqrt(o*o + a*a);

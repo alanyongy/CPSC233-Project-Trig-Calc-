@@ -59,10 +59,12 @@ public class GUIController {
 		Point h = Calc.visibleMidPoint(triangle.getHa(), triangle.getHo());
 		Point o = Calc.visibleMidPoint(triangle.getHo(), triangle.getOa());
 		Point a = Calc.visibleMidPoint(triangle.getHa(), triangle.getOa());
+		Point ha = Calc.visibleMidPoint(triangle.getHa(), triangle.getHa());
 		
 		gc.fillText("label", h.getX(), h.getY());
 		gc.fillText("label", o.getX(), o.getY());
 		gc.fillText("label", a.getX(), a.getY());
+		gc.fillText("label", ha.getX(), ha.getY());
 	}
    
     void displayFormula() {
