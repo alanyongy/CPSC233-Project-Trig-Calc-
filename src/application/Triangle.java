@@ -36,8 +36,6 @@ public class Triangle {
 		if(ha.getY() < 0) translatePoints(0, Math.abs(ha.getY()));
 		if(oa.getX() < 0) translatePoints(Math.abs(oa.getX()), 0);
 		if(oa.getY() < 0) translatePoints(0, Math.abs(oa.getY()));
-		
-		System.out.println(o +","+ a);
 	}
 	
 	void translatePoints(double x, double y){

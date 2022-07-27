@@ -1,9 +1,11 @@
 package application;
 
+import java.text.DecimalFormat;
+
 public class Calc {
 	static Triangle solveValues(double h, double o, double a, double t, boolean d){
 		String formula = "";
-		String angleMode = d ? "(Degrees)" : "(Radians)";
+		String angleMode = d ? "°" : "rad";
 		
 		if(d) t = Math.toRadians(t);
 		
@@ -40,9 +42,16 @@ public class Calc {
 			formula += "\nRearranged from: tanθ = o/a";
 			h = Math.sqrt(a*a + o*o);
 		}
+		
 		if(d) t = Math.toDegrees(t);
-		String info = "H:" + h + " O:" + o + " A:" + a + " θ:" + t + angleMode + "\n\nFormula Used: " + formula;
+
+		String info = "Hyponetuse: " + format(h) + "\nOpposite: " + format(o) + "\nAdjacent: " + format(a) + "\nAngle θ: " + format(t) + angleMode + "\n\nFormula Used: " + formula;
 		Triangle triangle = new Triangle(h,o,a,info);
 		return triangle;
+	}
+	
+	static String format(double n){
+		DecimalFormat dec2 = new DecimalFormat("#0.00");
+		return ((Double.toString(n).length() - Double.toString(n).indexOf('.')) > 2) ? dec2.format(n) : Double.toString(n);
 	}
 }

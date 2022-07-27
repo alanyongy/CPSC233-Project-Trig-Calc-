@@ -57,7 +57,6 @@ public class GUIController {
 		gc.strokeLine(oaX, oaY, haX, haY);
 	}
    
-    
     void displayFormula() {
     	Double validatedH = validate(hTf.getText());
     	Double validatedO = validate(oTf.getText());

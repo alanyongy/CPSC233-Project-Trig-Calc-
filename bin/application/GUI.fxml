@@ -18,7 +18,7 @@
             <Label text="Enter Two Values:" />
             <HBox prefWidth="150">
                <children>
-                  <Label prefWidth="82.0" text="Hypotenus">
+                  <Label prefWidth="82.0" text="Hypotenuse">
                      <HBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="5.0" />
                      </HBox.margin>
