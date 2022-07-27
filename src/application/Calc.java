@@ -54,4 +54,10 @@ public class Calc {
 		DecimalFormat dec2 = new DecimalFormat("#0.00");
 		return ((Double.toString(n).length() - Double.toString(n).indexOf('.')) > 2) ? dec2.format(n) : Double.toString(n);
 	}
+	
+	static Point visibleMidPoint(Point p1, Point p2) {
+		Point midPoint = new Point((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2);
+		if (midPoint.getY() < 10) midPoint.setY(10);
+		return midPoint;
+	}
 }

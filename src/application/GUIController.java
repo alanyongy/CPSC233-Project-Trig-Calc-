@@ -55,6 +55,14 @@ public class GUIController {
 		gc.strokeLine(haX, haY, hoX, hoY);
 		gc.strokeLine(hoX, hoY, oaX, oaY);
 		gc.strokeLine(oaX, oaY, haX, haY);
+		
+		Point h = Calc.visibleMidPoint(triangle.getHa(), triangle.getHo());
+		Point o = Calc.visibleMidPoint(triangle.getHo(), triangle.getOa());
+		Point a = Calc.visibleMidPoint(triangle.getHa(), triangle.getOa());
+		
+		gc.fillText("label", h.getX(), h.getY());
+		gc.fillText("label", o.getX(), o.getY());
+		gc.fillText("label", a.getX(), a.getY());
 	}
    
     void displayFormula() {
