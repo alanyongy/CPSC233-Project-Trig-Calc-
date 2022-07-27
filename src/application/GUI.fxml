@@ -75,10 +75,11 @@
                   <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="280" text="Calculate" />
                </children>
             </HBox>
+            <Canvas fx:id="canvas" height="200.0" width="200.0">
+               <VBox.margin>
+                  <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+               </VBox.margin></Canvas>
          </children>
       </VBox>
    </top>
-   <bottom>
-      <Canvas fx:id="canvas" height="200.0" width="200.0" BorderPane.alignment="CENTER" />
-   </bottom>
 </BorderPane>

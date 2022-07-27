@@ -9,10 +9,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 public class GUIController {
 	Stage applicationStage;
+    Triangle triangle;
 	
     @FXML
     private TextField hTf;
@@ -29,15 +31,27 @@ public class GUIController {
     @FXML
     private Canvas canvas;
     @FXML
-    
     void calculate() {
     	displayFormula();
-    	drawTriangle();
+    	GraphicsContext gc = canvas.getGraphicsContext2D();
+    	drawTriangle(gc);
     }
     
-    void drawTriangle(){
-
-    }
+	public void drawTriangle(GraphicsContext gc) {
+		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		
+		double haX = triangle.getHa().getX();
+		double haY = triangle.getHa().getY();
+		double hoX = triangle.getHo().getX();
+		double hoY = triangle.getHo().getY();
+		double oaX = triangle.getOa().getX();
+		double oaY = triangle.getOa().getY();
+		
+		gc.strokeLine(haX, haY, hoX, hoY);
+		gc.strokeLine(hoX, hoY, oaX, oaY);
+		gc.strokeLine(oaX, oaY, haX, haY);
+	}
+   
     
     void displayFormula() {
     	Double validatedH = validate(hTf.getText());
@@ -46,8 +60,7 @@ public class GUIController {
     	Double validatedT = validate(tTf.getText());
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
     	
-    	String formula = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
-    	System.out.println(formula);
+    	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
     
     @FXML

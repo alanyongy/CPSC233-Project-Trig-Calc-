@@ -1,7 +1,7 @@
 package application;
 
 public class Calc {
-	static String solveValues(double h, double o, double a, double t, boolean d){
+	static Triangle solveValues(double h, double o, double a, double t, boolean d){
 		String formula = "";
 		String angleMode = d ? "(Degrees)" : "(Radians)";
 		
@@ -41,8 +41,8 @@ public class Calc {
 			h = Math.sqrt(a*a + o*o);
 		}
 		if(d) t = Math.toDegrees(t);
-		
-		return  "H:" + h + " O:" + o + " A:" + a + " θ:" + t + angleMode + "\nFormula Used: " + formula;
+		String info = "H:" + h + " O:" + o + " A:" + a + " θ:" + t + angleMode + "\nFormula Used: " + formula;
+		Triangle triangle = new Triangle(h,o,a,info);
+		return triangle;
 	}
-	
 }
