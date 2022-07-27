@@ -26,9 +26,10 @@ public class Triangle {
 		a *= scale;
 		h = Math.sqrt(o*o + a*a);
 		
-		this.ho = new Point(a/2,o/2);
-		this.ha = new Point(-a/2,-o/2);
-		this.oa = new Point(a/2,-o/2);
+		//o is reversed to counter-act canvas' flipped y axis
+		this.ho = new Point(a/2,-o/2);
+		this.ha = new Point(-a/2,o/2);
+		this.oa = new Point(a/2,o/2);
 		
 		if(ho.getX() < 0) translatePoints(Math.abs(ho.getX()), 0);
 		if(ho.getY() < 0) translatePoints(0, Math.abs(ho.getY()));
