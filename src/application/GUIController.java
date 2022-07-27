@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
@@ -10,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GUIController {
@@ -30,6 +33,8 @@ public class GUIController {
     private ToggleButton radiansToggleButton;
     @FXML
     private Canvas canvas;
+    @FXML
+    private Text infoText;
     @FXML
     void calculate() {
     	displayFormula();
@@ -59,8 +64,8 @@ public class GUIController {
     	Double validatedA = validate(aTf.getText());
     	Double validatedT = validate(tTf.getText());
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-    	
     	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
+    	infoText.setText(triangle.getInfo());
     }
     
     @FXML
