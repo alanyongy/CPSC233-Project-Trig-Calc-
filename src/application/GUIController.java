@@ -32,7 +32,7 @@ public class GUIController {
     @FXML
     private ToggleButton radiansToggleButton;
     @FXML
-    private Canvas canvas;
+    private Canvas canvas = new Canvas();
     @FXML
     private Text infoText;
     @FXML

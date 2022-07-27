@@ -11,10 +11,42 @@ public class Triangle {
 		a = setA;	
 		info = setInfo;
 		
-		center = new Point(a/2, o/2);
-		ho = new Point(a,o);
-		ha = new Point(-a,-o);
-		oa = new Point(a,-o);
+		normalizePoints();
+	}
+	//translates points of triangles such that they are all positive
+	//scales up/down triangle such that triangle's largest length uses entire canvas (maxW, maxH)
+	void normalizePoints(){
+		double maxW = 360;
+		double maxH = 180;
+		double scale = 1;
+		//which side length is closer to its side of the window's maximum size
+		if(Math.abs(o)/maxH > Math.abs(a)/maxW) scale = maxH / o;
+		else scale = maxW / a;
+		o *= scale;
+		a *= scale;
+		h = Math.sqrt(o*o + a*a);
+		
+		this.ho = new Point(a/2,o/2);
+		this.ha = new Point(-a/2,-o/2);
+		this.oa = new Point(a/2,-o/2);
+		
+		if(ho.getX() < 0) translatePoints(Math.abs(ho.getX()), 0);
+		if(ho.getY() < 0) translatePoints(0, Math.abs(ho.getY()));
+		if(ha.getX() < 0) translatePoints(Math.abs(ha.getX()), 0);
+		if(ha.getY() < 0) translatePoints(0, Math.abs(ha.getY()));
+		if(oa.getX() < 0) translatePoints(Math.abs(oa.getX()), 0);
+		if(oa.getY() < 0) translatePoints(0, Math.abs(oa.getY()));
+		
+		System.out.println(o +","+ a);
+	}
+	
+	void translatePoints(double x, double y){
+		ho.setX(ho.getX()+x);
+		ho.setY(ho.getY()+y);
+		ha.setX(ha.getX()+x);
+		ha.setY(ha.getY()+y);
+		oa.setX(oa.getX()+x);
+		oa.setY(oa.getY()+y);
 	}
 	
 	public double getH() {

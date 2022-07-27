@@ -5,6 +5,8 @@ public class Calc {
 		String formula = "";
 		String angleMode = d ? "(Degrees)" : "(Radians)";
 		
+		if(d) t = Math.toRadians(t);
+		
 		if(h!=0 && o!=0) {
 			t = Math.asin(o/h);
 			formula += "θ = aSin(o/h)";
@@ -20,7 +22,7 @@ public class Calc {
 			formula += "o = h*sin(θ)";
 			formula += "\nRearranged from: sinθ = o/h";
 			a = h*Math.cos(a);
-			formula += "a = h*cos(θ)";
+			formula += "\n\nFormula Used: a = h*cos(θ)";
 			formula += "\nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
 			t = Math.atan(o/a);
@@ -28,12 +30,10 @@ public class Calc {
 			formula += "\nRearranged from: tanθ = o/a";
 			h = Math.sqrt(a*a + o*o);
 		} else if(o!=0 && t!=0) {
-			h = o/Math.sin(t);
-			formula += "h = o/sin(θ)";
-			formula += "\nRearranged from: sinθ = o/h";
 			a = o/Math.tan(t);
 			formula += "a = o/tan(θ)";
 			formula += "\nRearranged from: tanθ = o/a";
+			h = Math.sqrt(a*a + o*o);
 		} else if(a!=0 && t!=0) {
 			o = a*Math.tan(t);
 			formula += "o = a*tan(θ)";
@@ -41,7 +41,7 @@ public class Calc {
 			h = Math.sqrt(a*a + o*o);
 		}
 		if(d) t = Math.toDegrees(t);
-		String info = "H:" + h + " O:" + o + " A:" + a + " θ:" + t + angleMode + "\nFormula Used: " + formula;
+		String info = "H:" + h + " O:" + o + " A:" + a + " θ:" + t + angleMode + "\n\nFormula Used: " + formula;
 		Triangle triangle = new Triangle(h,o,a,info);
 		return triangle;
 	}
