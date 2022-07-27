@@ -56,10 +56,10 @@ public class GUIController {
 		gc.strokeLine(hoX, hoY, oaX, oaY);
 		gc.strokeLine(oaX, oaY, haX, haY);
 		
-		Point h = Calc.visibleMidPoint(triangle.getHa(), triangle.getHo());
-		Point o = Calc.visibleMidPoint(triangle.getHo(), triangle.getOa());
-		Point a = Calc.visibleMidPoint(triangle.getHa(), triangle.getOa());
-		Point t = Calc.visibleMidPoint(triangle.getHa(), triangle.getHa());
+		Point h = Calc.createMidpoint(triangle.getHa(), triangle.getHo());
+		Point o = Calc.createMidpoint(triangle.getHo(), triangle.getOa());
+		Point a = Calc.createMidpoint(triangle.getHa(), triangle.getOa());
+		Point t = Calc.createMidpoint(triangle.getHa(), triangle.getHa());
 		
 		Calc.moveOverlappingPoints(h, o, a, t);
 		
