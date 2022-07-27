@@ -81,14 +81,16 @@ public class GUIController {
     
     Double validate(String text) {
     	int dotCount = 0;
+    	int dashCount = 0;
     	if(text.isEmpty()) return 0.0;
     	for(int i = 0; i < text.length(); i++) {
     		if(!Character.isDigit(text.charAt(i))){
         		if(text.charAt(i) == '.') dotCount++;
+        		else if(text.charAt(i) == '-') dashCount++;
         		else return 0.0;
     		}
     	}
-    	if(dotCount > 1) return 0.0;
+    	if(dotCount > 1 || dashCount > 1) return 0.0;
     	return Double.parseDouble(text);
     }
 }
