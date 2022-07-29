@@ -1,5 +1,6 @@
 package application;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class Triangle {
@@ -17,6 +18,57 @@ public class Triangle {
 		info.put("t", setInfoT);
 		info.put("solveMethod", setF);
 		normalizePoints();
+	}
+	
+	Triangle(double h, double o, double a, double t, boolean d){
+		String solveMethod = "";
+		String angleMode = d ? "°" : "rad";
+		
+		if(d) t = Math.toRadians(t);
+		
+		if(h!=0 && o!=0) {
+			t = Math.asin(o/h);
+			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
+			a = Math.sqrt(h*h - o*o);
+		} else if(h!=0 && a!=0) {
+			t = Math.acos(a/h);
+			solveMethod += "θ = aCos(a/h) \nRearranged from: cosθ = a/h";
+			o = Math.sqrt(h*h - a*a);
+		} else if(h!=0 && t!=0) {
+			o = h*Math.sin(t);
+			a = h*Math.cos(t);
+			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nFormula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
+		} else if(o!=0 && a!=0) {
+			t = Math.atan(o/a);
+			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";
+			h = Math.sqrt(a*a + o*o);
+		} else if(o!=0 && t!=0) {
+			a = o/Math.tan(t);
+			solveMethod += "a = o/tan(θ) \nRearranged from: tanθ = o/a";
+			h = Math.sqrt(a*a + o*o);
+		} else if(a!=0 && t!=0) {
+			o = a*Math.tan(t);
+			solveMethod += "o = a*tan(θ) \nRearranged from: tanθ = o/a";
+			h = Math.sqrt(a*a + o*o);
+		}
+		if(d) t = Math.toDegrees(t);
+		
+		this.h = h;
+		this.o = o;
+		this.a = a;	
+		info.put("h", format(h));
+		info.put("o", format(o));
+		info.put("a", format(a));
+		info.put("t", format(t) + angleMode);
+		info.put("solveMethod", solveMethod);
+		normalizePoints();
+	}
+	
+	static String format(double n){
+		DecimalFormat dec2 = new DecimalFormat("#0.00");
+		//DecimalFormat dec0 = new DecimalFormat("#0");
+		//return ((Double.toString(n).length() - Double.toString(n).indexOf('.')) > 2) ? dec2.format(n) : dec0.format(n);
+		return dec2.format(n);
 	}
 	//translates points of triangles such that they are all positive
 	//scales up/down triangle such that triangle's largest length uses entire canvas (maxW, maxH)

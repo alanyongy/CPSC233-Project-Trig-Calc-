@@ -62,7 +62,7 @@ public class GUIController {
 		Point a = new Point(triangle.getHa(), triangle.getOa(), 335, 10);
 		Point t = new Point(triangle.getHa(), triangle.getHa(), 335, 10);
 		
-		Calc.moveOverlappingPoints(h, o, a, t);
+		moveOverlappingPoints(h, o, a, t);
 		
 		gc.fillText(triangle.getInfo("h"), h.getX(), h.getY());
 		gc.fillText(triangle.getInfo("o"), o.getX(), o.getY());
@@ -82,7 +82,7 @@ public class GUIController {
     	Double validatedA = validateInput("Adjacent", aTf.getText(), false);
     	Double validatedT = validateInput("Angle θ", tTf.getText(), true);
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-    	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
+    	triangle = new Triangle(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
     
     @FXML
@@ -140,6 +140,21 @@ public class GUIController {
     	}
     	return true;
     }
+    
+	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {
+		Point[] p = {h,o,a,t};
+		int marginY = 15;
+		int marginX = 50;
+		for(int i = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
+				if(j==i) continue;
+				if(Math.abs(p[i].getY() - p[j].getY()) < marginY && Math.abs(p[i].getX() - p[j].getX()) < marginX) {
+					if(p[i].getY() <= p[j].getY()) p[j].setY(p[j].getY() + marginY + 2 - (p[j].getY()-p[i].getY()));
+					else p[i].setY(p[i].getY() + marginY + 2 - (p[i].getY()-p[j].getY()));
+				}
+			}
+		}
+	}
 }
 
 

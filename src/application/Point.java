@@ -12,7 +12,7 @@ public class Point {
 		double newX = (p1.getX()+p2.getX())/2;
 		double newY = (p1.getY()+p2.getY())/2;
 		x = (newX > xBound) ? xBound : newX;
-		y = (newY > yBound) ? yBound : newY;
+		y = (newY < yBound) ? yBound : newY;
 	}
 
 	public double getX() {
