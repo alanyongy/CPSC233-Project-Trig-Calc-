@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Triangle {
 	private double h, o, a;
-	private Point center, ho, ha, oa;
+	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
 	
 	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, String setInfoA, String setInfoT, String setF){	
@@ -77,43 +77,30 @@ public class Triangle {
 		this.a = a;
 	}
 
-	public Point getCenter() {
-		return center;
-	}
-
-	public void setCenter(Point center) {
-		this.center = center;
-	}
-
 	public Point getHo() {
-		return ho;
+		Point newHo = new Point(ho.getX(), ho.getY());
+		return newHo;
 	}
-
-	public void setHo(Point ho) {
-		this.ho = ho;
-	}
-
+	
 	public Point getHa() {
-		return ha;
+		Point newHa = new Point(ha.getX(), ha.getY());
+		return newHa;
 	}
-
-	public void setHa(Point ha) {
-		this.ha = ha;
-	}
-
+	
 	public Point getOa() {
-		return oa;
-	}
-
-	public void setOa(Point oa) {
-		this.oa = oa;
+		Point newOa = new Point(oa.getX(), oa.getY());
+		return newOa;
 	}
 
 	public String getInfo(String key) {
-		return info.get(key);
+		String newStr = new String(info.get(key));
+		return newStr;
 	}
 
 	public void setInfo(String key, String value) {
-		info.replace(key,value);
+		HashMap<String, String> newInfo = new HashMap<String, String>(info);
+		newInfo.replace(key, value);
+		info = newInfo;
+		
 	}
 }

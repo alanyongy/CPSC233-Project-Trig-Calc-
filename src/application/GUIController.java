@@ -134,7 +134,7 @@ public class GUIController {
     	if (aTf.getText().isEmpty()) counter++;
     	if (tTf.getText().isEmpty()) counter++;
     	if (counter != 2) {
-    		errorLabel.setText("Enter exactly two values");
+    		errorLabel.setText("Only enter values for two components.");
     		return false;
     	}
     	return true;
@@ -148,3 +148,5 @@ public class GUIController {
     	return true;
     }
 }
+
+
