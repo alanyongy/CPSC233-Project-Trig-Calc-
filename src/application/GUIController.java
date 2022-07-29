@@ -36,10 +36,18 @@ public class GUIController {
     @FXML
     private Text infoText;
     @FXML
+    private Label errorLabel; 
+	
+    @FXML
     void calculate() {
-    	displayFormula();
-    	GraphicsContext gc = canvas.getGraphicsContext2D();
-    	drawTriangle(gc);
+    	errorLabel.setText("");
+    	if(validateTotalInputs()) {
+    		createTriangle();
+    		if(validateTriangle()) {
+        		GraphicsContext gc = canvas.getGraphicsContext2D();
+            	drawTriangle(gc);
+    		}
+    	}
     }
     
 	public void drawTriangle(GraphicsContext gc) {
@@ -67,20 +75,21 @@ public class GUIController {
 		gc.fillText(triangle.getInfo("o"), o.getX(), o.getY());
 		gc.fillText(triangle.getInfo("a"), a.getX(), a.getY());
 		gc.fillText(triangle.getInfo("t"), t.getX(), t.getY());
-	}
-   
-    void displayFormula() {
-    	Double validatedH = validate(hTf.getText());
-    	Double validatedO = validate(oTf.getText());
-    	Double validatedA = validate(aTf.getText());
-    	Double validatedT = validate(tTf.getText());
-    	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-    	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
+		
     	infoText.setText("Hyponetuse: " + triangle.getInfo("h") + 
     			"\nOpposite: " + triangle.getInfo("o") + 
     			"\nAdjacent: " + triangle.getInfo("a") + 
     			"\nAngle θ: " + triangle.getInfo("t")  + 
     			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
+	}
+   
+    void createTriangle() {
+    	Double validatedH = validateInput("Hypotenuse", hTf.getText(), false);
+    	Double validatedO = validateInput("Opposite", oTf.getText(), false);
+    	Double validatedA = validateInput("Adjacent", aTf.getText(), false);
+    	Double validatedT = validateInput("Angle θ", tTf.getText(), true);
+    	boolean degrees = degreesToggleButton.isSelected() ? true : false;
+    	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
     
     @FXML
@@ -94,18 +103,48 @@ public class GUIController {
     	}
     }
     
-    Double validate(String text) {
+    Double validateInput(String textField, String text, boolean isAngle) {
     	int dotCount = 0;
     	int dashCount = 0;
+		String errorDescription = "";
     	if(text.isEmpty()) return 0.0;
     	for(int i = 0; i < text.length(); i++) {
     		if(!Character.isDigit(text.charAt(i))){
         		if(text.charAt(i) == '.') dotCount++;
-        		else if(text.charAt(i) == '-') dashCount++;
+        		else if(text.charAt(i) == '-' && i == 0) dashCount++;
         		else return 0.0;
     		}
     	}
-    	if(dotCount > 1 || dashCount > 1) return 0.0;
+    	if((isAngle && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
+    			|| (isAngle && degreesToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= 90) 
+    			|| dotCount > 1 || dashCount > 1) {
+    		if (isAngle) errorDescription = " must be less than 90° or π/2";
+    		else if(dotCount > 1) errorDescription = " can only contain one decimal point.";
+    		else if(dashCount > 1) errorDescription = " can only contain one negative sign.";
+    		errorLabel.setText(textField + errorDescription);
+    		return 0.0;
+    	}
     	return Double.parseDouble(text);
+    }
+    
+    boolean validateTotalInputs() {
+    	int counter = 0;
+    	if (hTf.getText().isEmpty()) counter++;
+    	if (oTf.getText().isEmpty()) counter++;
+    	if (aTf.getText().isEmpty()) counter++;
+    	if (tTf.getText().isEmpty()) counter++;
+    	if (counter != 2) {
+    		errorLabel.setText("Enter exactly two values");
+    		return false;
+    	}
+    	return true;
+    }
+    
+    boolean validateTriangle() {
+    	if (Double.isNaN(triangle.getH()) && errorLabel.getText().isEmpty()) {
+    		errorLabel.setText("Opp. and Adj. can't be more than or equal to Hyp.");
+    		return false;
+    	}
+    	return true;
     }
 }

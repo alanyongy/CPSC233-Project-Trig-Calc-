@@ -18,7 +18,7 @@ public class Main extends Application {
 			BorderPane root = loader.load(new FileInputStream("src/application/GUI.fxml" ));
 			GUIController controller = (GUIController) loader.getController();
 			controller.applicationStage = primaryStage;
-			Scene scene = new Scene(root,400,600); 
+			Scene scene = new Scene(root,400,620); 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Trigonometry Calculator");
 			primaryStage.show();
@@ -31,6 +31,7 @@ public class Main extends Application {
 		launch(args);
 	}
 }
+
 
 //Collection of Java documentation embedded tutorials used:
 /**

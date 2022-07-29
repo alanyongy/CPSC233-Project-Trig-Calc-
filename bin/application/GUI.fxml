@@ -15,7 +15,19 @@
    <top>
       <VBox prefHeight="150" prefWidth="150" BorderPane.alignment="CENTER">
          <children>
-            <Label text="Enter Two Values:" />
+            <HBox prefWidth="150">
+               <children>
+                  <Label text="Enter Two Values:" />
+                  <Label fx:id="errorLabel" textFill="red">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </HBox>
             <HBox prefWidth="150">
                <children>
                   <Label prefWidth="82.0" text="Hypotenuse">
@@ -73,7 +85,10 @@
                <children>
                     <ToggleButton fx:id="degreesToggleButton" onAction="#toggleAngleMode" selected="true" text="Degrees" />
                     <ToggleButton fx:id="radiansToggleButton" onAction="#toggleAngleMode" text="Radians" />
-                  <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" text="Calculate" />
+                  <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="250" text="Calculate">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin></Button>
                </children>
             </HBox>
             <Canvas fx:id="canvas" height="200" width="400">
