@@ -63,10 +63,10 @@ public class GUIController {
 		
 		Calc.moveOverlappingPoints(h, o, a, t);
 		
-		gc.fillText("label", h.getX(), h.getY());
-		gc.fillText("label", o.getX(), o.getY());
-		gc.fillText("label", a.getX(), a.getY());
-		gc.fillText("label", t.getX(), t.getY());
+		gc.fillText(triangle.getInfo("h"), h.getX(), h.getY());
+		gc.fillText(triangle.getInfo("o"), o.getX(), o.getY());
+		gc.fillText(triangle.getInfo("a"), a.getX(), a.getY());
+		gc.fillText(triangle.getInfo("t"), t.getX(), t.getY());
 	}
    
     void displayFormula() {
@@ -76,7 +76,11 @@ public class GUIController {
     	Double validatedT = validate(tTf.getText());
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
     	triangle = Calc.solveValues(validatedH,validatedO,validatedA,validatedT, degrees); 
-    	infoText.setText(triangle.getInfo());
+    	infoText.setText("Hyponetuse: " + triangle.getInfo("h") + 
+    			"\nOpposite: " + triangle.getInfo("o") + 
+    			"\nAdjacent: " + triangle.getInfo("a") + 
+    			"\nAngle θ: " + triangle.getInfo("t")  + 
+    			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
     }
     
     @FXML

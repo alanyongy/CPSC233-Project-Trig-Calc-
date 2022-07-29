@@ -1,16 +1,21 @@
 package application;
 
+import java.util.HashMap;
+
 public class Triangle {
 	private double h, o, a;
 	private Point center, ho, ha, oa;
-	private String info;
+	private HashMap<String, String> info = new HashMap<String, String>();
 	
-	Triangle(double setH, double setO, double setA, String setInfo){	
+	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, String setInfoA, String setInfoT, String setF){	
 		h = setH;
 		o = setO;
 		a = setA;	
-		info = setInfo;
-		
+		info.put("h", setInfoH);
+		info.put("o", setInfoO);
+		info.put("a", setInfoA);
+		info.put("t", setInfoT);
+		info.put("solveMethod", setF);
 		normalizePoints();
 	}
 	//translates points of triangles such that they are all positive
@@ -104,11 +109,11 @@ public class Triangle {
 		this.oa = oa;
 	}
 
-	public String getInfo() {
-		return info;
+	public String getInfo(String key) {
+		return info.get(key);
 	}
 
-	public void setInfo(String info) {
-		this.info = info;
+	public void setInfo(String key, String value) {
+		info.replace(key,value);
 	}
 }
