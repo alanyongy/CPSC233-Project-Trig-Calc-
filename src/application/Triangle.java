@@ -97,10 +97,10 @@ public class Triangle {
 		return newStr;
 	}
 
-	public void setInfo(String key, String value) {
-		HashMap<String, String> newInfo = new HashMap<String, String>(info);
-		newInfo.replace(key, value);
-		info = newInfo;
-		
-	}
+//	//currently unused
+//	public void setInfo(String key, String value) {
+//		HashMap<String, String> newInfo = new HashMap<String, String>(info);
+//		newInfo.replace(key, value);
+//		info = newInfo;
+//	}
 }

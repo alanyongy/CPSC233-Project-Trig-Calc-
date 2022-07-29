@@ -1,7 +1,7 @@
 package application;
 
 import java.text.DecimalFormat;
-
+//TODO rename calc?
 public class Calc {
 	static Triangle solveValues(double h, double o, double a, double t, boolean d){
 		String solveMethod = "";
@@ -46,13 +46,6 @@ public class Calc {
 		//DecimalFormat dec0 = new DecimalFormat("#0");
 		//return ((Double.toString(n).length() - Double.toString(n).indexOf('.')) > 2) ? dec2.format(n) : dec0.format(n);
 		return dec2.format(n);
-	}
-	
-	static Point createMidpoint(Point p1, Point p2) {
-		Point midPoint = new Point((p1.getX()+p2.getX())/2, (p1.getY()+p2.getY())/2);
-		if (midPoint.getY() < 10) midPoint.setY(10);
-		if (midPoint.getX() > 335) midPoint.setX(335);
-		return midPoint;
 	}
 	
 	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {

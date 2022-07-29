@@ -1,17 +1,10 @@
 package application;
 
-import java.util.ArrayList;
-
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -64,10 +57,10 @@ public class GUIController {
 		gc.strokeLine(hoX, hoY, oaX, oaY);
 		gc.strokeLine(oaX, oaY, haX, haY);
 		
-		Point h = Calc.createMidpoint(triangle.getHa(), triangle.getHo());
-		Point o = Calc.createMidpoint(triangle.getHo(), triangle.getOa());
-		Point a = Calc.createMidpoint(triangle.getHa(), triangle.getOa());
-		Point t = Calc.createMidpoint(triangle.getHa(), triangle.getHa());
+		Point h = new Point(triangle.getHa(), triangle.getHo(), 335, 10);
+		Point o = new Point(triangle.getHo(), triangle.getOa(), 335, 10);
+		Point a = new Point(triangle.getHa(), triangle.getOa(), 335, 10);
+		Point t = new Point(triangle.getHa(), triangle.getHa(), 335, 10);
 		
 		Calc.moveOverlappingPoints(h, o, a, t);
 		
