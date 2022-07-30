@@ -8,6 +8,14 @@ public class Triangle {
 	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
 	
+	/**
+	 * Triangle constructor. Solves for the missing values, then sets values and solve method to triangle object.
+	 * @param h - hypotenuse length
+	 * @param o - opposite length
+	 * @param a - adjacent length
+	 * @param t - theta - angle between hypotenuse and adjacent
+	 * @param d - degree mode (degrees if true, radians if false)
+	 */
 	Triangle(double h, double o, double a, double t, boolean d){
 		String solveMethod = "";
 		String angleMode = d ? "°" : "rad";
@@ -44,21 +52,32 @@ public class Triangle {
 		this.h = h;
 		this.o = o;
 		this.a = a;	
-		info.put("h", format(h));
-		info.put("o", format(o));
-		info.put("a", format(a));
-		info.put("t", format(t) + angleMode);
+		info.put("h", format2DP(h));
+		info.put("o", format2DP(o));
+		info.put("a", format2DP(a));
+		info.put("t", format2DP(t) + angleMode);
 		info.put("solveMethod", solveMethod);
 		normalizePoints();
 	}
 	
-	static String format(double n){
+
+	/**
+	 * Sets number to 2 decimal places.
+	 * @param n - number
+	 * @return the number set to 2 decimal places
+	 */
+	static String format2DP(double n){
 		DecimalFormat dec2 = new DecimalFormat("#0.00");
 		return dec2.format(n);
 	}
 	
-	//translates points of triangles such that they are all positive
-	//scales up/down triangle such that triangle's largest length uses entire canvas (maxW, maxH)
+
+	/**
+	 *Reflects the points of the triangle over the x/y axis such that they are all positive. 
+	 *
+	 *Scales up/down the size of the triangle such that it's largest length 
+	 *(relative to canvas edge length) uses the entire canvas (maxW, maxH)
+	 */
 	void normalizePoints(){
 		double maxW = 360;
 		double maxH = 180;
@@ -86,6 +105,11 @@ public class Triangle {
 		if(oa.getY() < 0) translatePoints(0, Math.abs(oa.getY()));
 	}
 	
+	/**
+	 * Moves all points of the triangle right by x, down by y.
+	 * @param x - horizontal direction
+	 * @param y - vertical direction
+	 */
 	void translatePoints(double x, double y){
 		ho.setX(ho.getX()+x);
 		ho.setY(ho.getY()+y);
@@ -134,6 +158,11 @@ public class Triangle {
 		return newOa;
 	}
 
+	/**
+	 * Returns value of info.get(key) (Does not return a reference)
+	 * @param key
+	 * @return String value of info.get(key)
+	 */
 	public String getInfo(String key) {
 		String newStr = new String(info.get(key));
 		return newStr;

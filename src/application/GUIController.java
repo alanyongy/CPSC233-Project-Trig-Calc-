@@ -42,8 +42,12 @@ public class GUIController {
     		}
     	}
     }
-	//TODO dont let user enter 0 
-    
+	/**
+	 * Draws the triangle by stroking between triangle points.
+	 * Moves and sets labels to their respective side-length/angle position and value.
+	 * Displays the solve method information in the text area.
+	 * @param gc - GraphicsContext object
+	 */
 	public void drawTriangle(GraphicsContext gc) {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		
@@ -53,15 +57,16 @@ public class GUIController {
 		double hoY = triangle.getHo().getY();
 		double oaX = triangle.getOa().getX();
 		double oaY = triangle.getOa().getY();
-		
 		gc.strokeLine(haX, haY, hoX, hoY);
 		gc.strokeLine(hoX, hoY, oaX, oaY);
 		gc.strokeLine(oaX, oaY, haX, haY);
 		
-		Point h = new Point(triangle.getHa(), triangle.getHo(), 335, 10);
-		Point o = new Point(triangle.getHo(), triangle.getOa(), 335, 10);
-		Point a = new Point(triangle.getHa(), triangle.getOa(), 335, 10);
-		Point t = new Point(triangle.getHa(), triangle.getHa(), 335, 10);
+		int xBound = 335;
+		int yBound = 10;
+		Point h = new Point(triangle.getHa(), triangle.getHo(), xBound, yBound);
+		Point o = new Point(triangle.getHo(), triangle.getOa(), xBound, yBound);
+		Point a = new Point(triangle.getHa(), triangle.getOa(), xBound, yBound);
+		Point t = new Point(triangle.getHa(), triangle.getHa(), xBound, yBound);
 		
 		moveOverlappingPoints(h, o, a, t);
 		
@@ -77,6 +82,9 @@ public class GUIController {
     			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
 	}
    
+    /**
+     * Validates the values in the text fields entered by the user, then calls the triangle constructor with those values.
+     */
     void createTriangle() {
     	Double validatedH = validateInput("Hypotenuse", hTf.getText(), false);
     	Double validatedO = validateInput("Opposite", oTf.getText(), false);
@@ -86,6 +94,11 @@ public class GUIController {
     	triangle = new Triangle(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
     
+    
+    /**
+     * Toggles the degrees and radians button in the GUI such that one and only one is always active.
+     * @param trigger - radians or degrees GUI button
+     */
     @FXML
     void toggleAngleMode(ActionEvent trigger) {
     	if(trigger.getSource().equals(degreesToggleButton)) {
@@ -97,9 +110,22 @@ public class GUIController {
     	}
     }
     
+    
+    /**
+     * Checks if the text field contains a valid side length value. 
+     * Valid side lengths only contain digits, as well as up to one decimal and/or negative sign.
+     * Valid angles are (90 > n > -90) in degrees mode, or (-π/2 > n > -π/2) in radians mode.
+     * 0 Is not a valid side length or angle.
+     * Sets the error label in GUI to a description of the error if the text field is invalid.
+     * @param textField - input text field
+     * @param text - text within the input text field
+     * @param isAngle - whether the input is the value of an angle
+     * @return double value of text, otherwise 0.0
+     */
     Double validateInput(String textField, String text, boolean isAngle) {
     	int dotCount = 0;
     	int dashCount = 0;
+    	int otherCount = 0;
 		String errorDescription = "";
 		
     	if(text.isEmpty()) return 0.0;
@@ -108,16 +134,19 @@ public class GUIController {
     		if(!Character.isDigit(text.charAt(i))){
         		if(text.charAt(i) == '.') dotCount++;
         		else if(text.charAt(i) == '-' && i == 0) dashCount++;
-        		else return 0.0;
+        		else otherCount++;
     		}
     	}
     	
-    	if((isAngle && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
+    	if(dotCount > 1 || dashCount > 1 || otherCount > 1 
+    			|| (isAngle && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
     			|| (isAngle && degreesToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= 90) 
-    			|| dotCount > 1 || dashCount > 1) {
+    			|| Double.parseDouble(text) == 0) {
     		if (isAngle) errorDescription = " must be less than 90° or π/2";
     		else if(dotCount > 1) errorDescription = " can only contain one decimal point.";
     		else if(dashCount > 1) errorDescription = " can only contain one negative sign.";
+    		else if(otherCount > 1) errorDescription = " can only contain digits, decimals or negative signs.";
+    		else if(Double.parseDouble(text) == 0) errorDescription = " can not be equal to 0.";
     		errorLabel.setText(textField + errorDescription);
     		return 0.0;
     	}
@@ -125,6 +154,10 @@ public class GUIController {
     	return Double.parseDouble(text);
     }
     
+    /**
+     * Checks if exactly two values were input by the user.
+     * @return true if two values entered, otherwise false
+     */
     boolean validateTotalInputs() {
     	int totalInputs = 0;
     	if (hTf.getText().isEmpty()) totalInputs++;
@@ -138,6 +171,11 @@ public class GUIController {
     	return true;
     }
     
+    
+    /**
+     * Checks if the created triangle has valid side lengths.
+     * @return true if valid, otherwise false
+     */
     boolean validateTriangle() {
     	//triangle.getH() will return NaN if it is unable to be calculated
     	//due to entering impossible values for triangle side lengths
@@ -148,6 +186,14 @@ public class GUIController {
     	return true;
     }
     
+    
+	/**
+	 * Checks for points that are too close to each other and moves them to prevent overlapping text. 
+	 * @param h - hypotenuse
+	 * @param o - opposite
+	 * @param a - adjacent
+	 * @param t - theta - angle
+	 **/
 	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {
 		Point[] p = {h,o,a,t};
 		int minY = 15;
