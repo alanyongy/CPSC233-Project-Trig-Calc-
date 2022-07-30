@@ -42,6 +42,7 @@ public class GUIController {
     		}
     	}
     }
+	//TODO dont let user enter 0 
     
 	public void drawTriangle(GraphicsContext gc) {
 		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -100,7 +101,9 @@ public class GUIController {
     	int dotCount = 0;
     	int dashCount = 0;
 		String errorDescription = "";
+		
     	if(text.isEmpty()) return 0.0;
+    	
     	for(int i = 0; i < text.length(); i++) {
     		if(!Character.isDigit(text.charAt(i))){
         		if(text.charAt(i) == '.') dotCount++;
@@ -108,6 +111,7 @@ public class GUIController {
         		else return 0.0;
     		}
     	}
+    	
     	if((isAngle && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
     			|| (isAngle && degreesToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= 90) 
     			|| dotCount > 1 || dashCount > 1) {
@@ -117,16 +121,17 @@ public class GUIController {
     		errorLabel.setText(textField + errorDescription);
     		return 0.0;
     	}
+    	
     	return Double.parseDouble(text);
     }
     
     boolean validateTotalInputs() {
-    	int counter = 0;
-    	if (hTf.getText().isEmpty()) counter++;
-    	if (oTf.getText().isEmpty()) counter++;
-    	if (aTf.getText().isEmpty()) counter++;
-    	if (tTf.getText().isEmpty()) counter++;
-    	if (counter != 2) {
+    	int totalInputs = 0;
+    	if (hTf.getText().isEmpty()) totalInputs++;
+    	if (oTf.getText().isEmpty()) totalInputs++;
+    	if (aTf.getText().isEmpty()) totalInputs++;
+    	if (tTf.getText().isEmpty()) totalInputs++;
+    	if (totalInputs != 2) {
     		errorLabel.setText("Only enter values for two components.");
     		return false;
     	}
@@ -134,8 +139,10 @@ public class GUIController {
     }
     
     boolean validateTriangle() {
+    	//triangle.getH() will return NaN if it is unable to be calculated
+    	//due to entering impossible values for triangle side lengths
     	if (Double.isNaN(triangle.getH()) && errorLabel.getText().isEmpty()) {
-    		errorLabel.setText("Opp. and Adj. can't be more than or equal to Hyp.");
+    		errorLabel.setText("Opp. and Adj. can't be larger than Hypotenuse");
     		return false;
     	}
     	return true;
@@ -143,14 +150,19 @@ public class GUIController {
     
 	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {
 		Point[] p = {h,o,a,t};
-		int marginY = 15;
-		int marginX = 50;
+		int minY = 15;
+		int minX = 50;
 		for(int i = 0; i < 4; i++) {
 			for(int j = 0; j < 4; j++) {
 				if(j==i) continue;
-				if(Math.abs(p[i].getY() - p[j].getY()) < marginY && Math.abs(p[i].getX() - p[j].getX()) < marginX) {
-					if(p[i].getY() <= p[j].getY()) p[j].setY(p[j].getY() + marginY + 2 - (p[j].getY()-p[i].getY()));
-					else p[i].setY(p[i].getY() + marginY + 2 - (p[i].getY()-p[j].getY()));
+				double p1X = p[i].getX();
+				double p1Y = p[i].getY();
+				double p2X = p[j].getX();
+				double p2Y = p[j].getY();
+				//move point to minX/Y relative to other point if they are too close
+				if(Math.abs(p1Y - p2Y) < minY && Math.abs(p1X - p2X) < minX) {
+					if(p1Y <= p2Y) p[j].setY(p2Y + minY - (p2Y-p1Y));
+					else p[i].setY(p1Y + minY - (p1Y-p2Y));
 				}
 			}
 		}
