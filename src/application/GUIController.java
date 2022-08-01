@@ -1,10 +1,13 @@
 package application;
 
+import java.awt.Font;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -70,6 +73,7 @@ public class GUIController {
 		
 		moveOverlappingPoints(h, o, a, t);
 		
+		gc.setFill(Color.RED);
 		gc.fillText(triangle.getInfo("h"), h.getX(), h.getY());
 		gc.fillText(triangle.getInfo("o"), o.getX(), o.getY());
 		gc.fillText(triangle.getInfo("a"), a.getX(), a.getY());
@@ -83,7 +87,7 @@ public class GUIController {
 	}
    
     /**
-     * Validates the values in the text fields entered by the user, then calls the triangle constructor with those values.
+     * Validates the values in the text fields entered by the user, then creates the triangle.
      */
     void createTriangle() {
     	Double validatedH = validateInput("Hypotenuse", hTf.getText(), false, true);
