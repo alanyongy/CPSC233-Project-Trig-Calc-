@@ -19,7 +19,8 @@ public class Triangle {
 	 * @param setInfoT - formatted degrees/radians value
 	 * @param setInfoSolveMethod - solve method and original formula
 	 */
-	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, String setInfoA, String setInfoT, String setInfoSolveMethod) {
+	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, 
+			String setInfoA, String setInfoT, String setInfoSolveMethod) {
 		this.h = setH;
 		this.o = setO;
 		this.a = setA;	

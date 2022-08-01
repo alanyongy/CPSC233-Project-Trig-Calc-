@@ -45,47 +45,7 @@ public class GUIController {
     		}
     	}
     }
-	/**
-	 * Draws the triangle by stroking between triangle points.
-	 * Moves and sets labels to their respective side-length/angle position and value.
-	 * Displays the solve method information in the text area.
-	 * @param gc - GraphicsContext object
-	 */
-	public void drawTriangle(GraphicsContext gc) {
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		
-		double haX = triangle.getHa().getX();
-		double haY = triangle.getHa().getY();
-		double hoX = triangle.getHo().getX();
-		double hoY = triangle.getHo().getY();
-		double oaX = triangle.getOa().getX();
-		double oaY = triangle.getOa().getY();
-		gc.strokeLine(haX, haY, hoX, hoY);
-		gc.strokeLine(hoX, hoY, oaX, oaY);
-		gc.strokeLine(oaX, oaY, haX, haY);
-		
-		int xBound = 335;
-		int yBound = 10;
-		Point h = Point.solveMidpoint(triangle.getHa(), triangle.getHo(), xBound, yBound);
-		Point o = Point.solveMidpoint(triangle.getHo(), triangle.getOa(), xBound, yBound);
-		Point a = Point.solveMidpoint(triangle.getHa(), triangle.getOa(), xBound, yBound);
-		Point t = Point.solveMidpoint(triangle.getHa(), triangle.getHa(), xBound, yBound);
-		
-		moveOverlappingPoints(h, o, a, t);
-		
-		gc.setFill(Color.RED);
-		gc.fillText(triangle.getInfo("h"), h.getX(), h.getY());
-		gc.fillText(triangle.getInfo("o"), o.getX(), o.getY());
-		gc.fillText(triangle.getInfo("a"), a.getX(), a.getY());
-		gc.fillText(triangle.getInfo("t"), t.getX(), t.getY());
-		
-    	infoText.setText("Hyponetuse: " + triangle.getInfo("h") + 
-    			"\nOpposite: " + triangle.getInfo("o") + 
-    			"\nAdjacent: " + triangle.getInfo("a") + 
-    			"\nAngle θ: " + triangle.getInfo("t")  + 
-    			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
-	}
-   
+    
     /**
      * Validates the values in the text fields entered by the user, then creates the triangle.
      */
@@ -97,7 +57,47 @@ public class GUIController {
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
     	triangle = Triangle.solveTriangle(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
-    
+   
+	/**
+	 * Draws the triangle by stroking between triangle points.
+	 * Moves and sets labels to their respective side-length/angle position and value.
+	 * Displays the solve method information in the text area.
+	 * @param graphics - GraphicsContext object
+	 */
+	public void drawTriangle(GraphicsContext graphics) {
+		graphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		
+		double haX = triangle.getHa().getX();
+		double haY = triangle.getHa().getY();
+		double hoX = triangle.getHo().getX();
+		double hoY = triangle.getHo().getY();
+		double oaX = triangle.getOa().getX();
+		double oaY = triangle.getOa().getY();
+		graphics.strokeLine(haX, haY, hoX, hoY);
+		graphics.strokeLine(hoX, hoY, oaX, oaY);
+		graphics.strokeLine(oaX, oaY, haX, haY);
+		
+		int xBound = 335;
+		int yBound = 10;
+		Point h = Point.solveMidpoint(triangle.getHa(), triangle.getHo(), xBound, yBound);
+		Point o = Point.solveMidpoint(triangle.getHo(), triangle.getOa(), xBound, yBound);
+		Point a = Point.solveMidpoint(triangle.getHa(), triangle.getOa(), xBound, yBound);
+		Point t = Point.solveMidpoint(triangle.getHa(), triangle.getHa(), xBound, yBound);
+		
+		Point.moveOverlappingPoints(h, o, a, t);
+		
+		graphics.setFill(Color.RED);
+		graphics.fillText(triangle.getInfo("h"), h.getX(), h.getY());
+		graphics.fillText(triangle.getInfo("o"), o.getX(), o.getY());
+		graphics.fillText(triangle.getInfo("a"), a.getX(), a.getY());
+		graphics.fillText(triangle.getInfo("t"), t.getX(), t.getY());
+		
+    	infoText.setText("Hyponetuse: " + triangle.getInfo("h") + 
+    			"\nOpposite: " + triangle.getInfo("o") + 
+    			"\nAdjacent: " + triangle.getInfo("a") + 
+    			"\nAngle θ: " + triangle.getInfo("t")  + 
+    			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
+	}
     
     /**
      * Toggles the degrees and radians button in the GUI such that one and only one is always active.
@@ -191,34 +191,6 @@ public class GUIController {
     	}
     	return true;
     }
-    
-    
-	/**
-	 * Checks for points that are too close to each other and moves them to prevent overlapping text. 
-	 * @param h - hypotenuse
-	 * @param o - opposite
-	 * @param a - adjacent
-	 * @param t - theta - angle
-	 **/
-	static void moveOverlappingPoints(Point h, Point o, Point a, Point t) {
-		Point[] p = {h,o,a,t};
-		int minY = 15;
-		int minX = 50;
-		for(int i = 0; i < 4; i++) {
-			for(int j = 0; j < 4; j++) {
-				if(j==i) continue;
-				double p1X = p[i].getX();
-				double p1Y = p[i].getY();
-				double p2X = p[j].getX();
-				double p2Y = p[j].getY();
-				//move point to minX/Y relative to other point if they are too close
-				if(Math.abs(p1Y - p2Y) < minY && Math.abs(p1X - p2X) < minX) {
-					if(p1Y <= p2Y) p[j].setY(p2Y + minY - (p2Y-p1Y));
-					else p[i].setY(p1Y + minY - (p1Y-p2Y));
-				}
-			}
-		}
-	}
 }
 
 
