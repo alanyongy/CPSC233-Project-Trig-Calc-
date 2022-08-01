@@ -8,28 +8,37 @@ public class Triangle {
 	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
 	
+	/**
+	 * Triangle constructor. Sets the side length values as well as it's label information.
+	 * @param setH - hypotenuse length
+	 * @param setO - opposite length
+	 * @param setA - adjacent length
+	 * @param setInfoH - formatted hypotenuse length
+	 * @param setInfoO - formatted opposite length
+	 * @param setInfoA - formatted adjacent length
+	 * @param setInfoT - formatted degrees/radians value
+	 * @param setInfoSolveMethod - solve method and original formula
+	 */
 	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, String setInfoA, String setInfoT, String setInfoSolveMethod) {
 		this.h = setH;
 		this.o = setO;
 		this.a = setA;	
-		info.put("h", setInfoA);
+		info.put("h", setInfoH);
 		info.put("o", setInfoO);
 		info.put("a", setInfoA);
 		info.put("t", setInfoT);
 		info.put("solveMethod", setInfoSolveMethod);
 		normalizePoints();
 	}
-	//TODO fix h label (size is not being set to h?)
-	//TODO fix h label being to h than o label to h 
 	
 	/**
-	 * Triangle constructor. Solves for the missing values, then sets values and solve method to triangle object.
+	 * Solves for the missing values, then creates a triangle with those values and solve method.
 	 * @param h - hypotenuse length
 	 * @param o - opposite length
 	 * @param a - adjacent length
 	 * @param t - theta - angle between hypotenuse and adjacent
 	 * @param d - degree mode (degrees if true, radians if false)
-	 * @return 
+	 * @return new triangle object
 	 */
 	static Triangle solveTriangle(double h, double o, double a, double t, boolean d){
 		String solveMethod = "";
@@ -38,11 +47,11 @@ public class Triangle {
 		if(d) t = Math.toRadians(t);
 		
 		if(h!=0 && o!=0) {
-			t = Math.asin(o/h);
+			t = Math.asin(Math.abs(o)/Math.abs(h));
 			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
 			a = Math.sqrt(h*h - o*o);
 		} else if(h!=0 && a!=0) {
-			t = Math.acos(a/h);
+			t = Math.acos(Math.abs(a)/Math.abs(h));
 			solveMethod += "θ = aCos(a/h) \nRearranged from: cosθ = a/h";
 			o = Math.sqrt(h*h - a*a);
 		} else if(h!=0 && t!=0) {
@@ -50,7 +59,7 @@ public class Triangle {
 			a = h*Math.cos(t);
 			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nFormula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
-			t = Math.atan(o/a);
+			t = Math.atan(Math.abs(o)/Math.abs(a));
 			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";
 			h = Math.sqrt(a*a + o*o);
 		} else if(o!=0 && t!=0) {
@@ -63,7 +72,6 @@ public class Triangle {
 			h = Math.sqrt(a*a + o*o);
 		}
 		if(d) t = Math.toDegrees(t);
-		
 		Triangle triangle = new Triangle(h,o,a,format2DP(h),format2DP(o),format2DP(a),format2DP(t)+angleMode,solveMethod);
 		return triangle;
 	}
@@ -82,9 +90,9 @@ public class Triangle {
 	
 
 	/**
+	 *Creates points for the triangle.
 	 *Reflects the points of the triangle over the x/y axis such that they are all positive. 
-	 *
-	 *Scales up/down the size of the triangle such that it's largest length 
+	 *Scales up/down the size (point coordinates) of the triangle such that it's largest length 
 	 *(relative to canvas edge length) uses the entire canvas (maxW, maxH)
 	 */
 	void normalizePoints(){

@@ -3,19 +3,25 @@ package application;
 public class Point {
 	private double x, y;
 	
+	
+	/**
+	 * Point constructor. Sets the x and y value of the point.
+	 * @param setX
+	 * @param setY
+	 */
 	Point(double setX, double setY){
 		x = setX;
 		y = setY;
 	}
 	
-	
 	/**
-	 * Point constructor. Uses the average x and y coordinate from the two points.
+	 * Uses the average x and y coordinate from p1 and p2 to create a new point.
 	 * Sets coordinates to xBound/yBound if they do not fall within those values (causing them to not appear in canvas)
-	 * @param p1 - Point object 1
-	 * @param p2 - Point object 2
-	 * @param xBound - maximum x coordinate
-	 * @param yBound - minimum y coordinate
+	 * @param p1 - first point
+	 * @param p2 - second point
+	 * @param xBound - maximum x value
+	 * @param yBound - minimum y value
+	 * @return new point object
 	 */
 	static Point solveMidpoint(Point p1, Point p2, int xBound, int yBound) {
 		double newX = (p1.getX()+p2.getX())/2;

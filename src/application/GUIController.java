@@ -86,10 +86,10 @@ public class GUIController {
      * Validates the values in the text fields entered by the user, then calls the triangle constructor with those values.
      */
     void createTriangle() {
-    	Double validatedH = validateInput("Hypotenuse", hTf.getText(), false);
-    	Double validatedO = validateInput("Opposite", oTf.getText(), false);
-    	Double validatedA = validateInput("Adjacent", aTf.getText(), false);
-    	Double validatedT = validateInput("Angle θ", tTf.getText(), true);
+    	Double validatedH = validateInput("Hypotenuse", hTf.getText(), false, true);
+    	Double validatedO = validateInput("Opposite", oTf.getText(), false, false);
+    	Double validatedA = validateInput("Adjacent", aTf.getText(), false, false);
+    	Double validatedT = validateInput("Angle θ", tTf.getText(), true, false);
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
     	triangle = Triangle.solveTriangle(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
@@ -122,7 +122,7 @@ public class GUIController {
      * @param isAngle - whether the input is the value of an angle
      * @return double value of text, otherwise 0.0
      */
-    Double validateInput(String textField, String text, boolean isAngle) {
+    Double validateInput(String textField, String text, boolean isAngle, boolean isH) {
     	int dotCount = 0;
     	int dashCount = 0;
     	int otherCount = 0;
@@ -138,14 +138,16 @@ public class GUIController {
     		}
     	}
     	
-    	if(dotCount > 1 || dashCount > 1 || otherCount > 1 
+    	if(dotCount > 1 || dashCount > 1 || otherCount >= 1 
     			|| (isAngle && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
     			|| (isAngle && degreesToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= 90) 
+    			|| (isH && Double.parseDouble(text) < 0) 
     			|| Double.parseDouble(text) == 0) {
     		if (isAngle) errorDescription = " must be less than 90° or π/2";
     		else if(dotCount > 1) errorDescription = " can only contain one decimal point.";
     		else if(dashCount > 1) errorDescription = " can only contain one negative sign.";
-    		else if(otherCount > 1) errorDescription = " can only contain digits, decimals or negative signs.";
+    		else if(otherCount >= 1) errorDescription = " can only contain digits, decimals or neg. signs.";
+    		else if(isH && Double.parseDouble(text) < 0) errorDescription = " can not be less than 0.";
     		else if(Double.parseDouble(text) == 0) errorDescription = " can not be equal to 0.";
     		errorLabel.setText(textField + errorDescription);
     		return 0.0;
