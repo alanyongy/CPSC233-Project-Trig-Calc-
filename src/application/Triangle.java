@@ -8,6 +8,20 @@ public class Triangle {
 	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
 	
+	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, String setInfoA, String setInfoT, String setInfoSolveMethod) {
+		this.h = setH;
+		this.o = setO;
+		this.a = setA;	
+		info.put("h", setInfoA);
+		info.put("o", setInfoO);
+		info.put("a", setInfoA);
+		info.put("t", setInfoT);
+		info.put("solveMethod", setInfoSolveMethod);
+		normalizePoints();
+	}
+	//TODO fix h label (size is not being set to h?)
+	//TODO fix h label being to h than o label to h 
+	
 	/**
 	 * Triangle constructor. Solves for the missing values, then sets values and solve method to triangle object.
 	 * @param h - hypotenuse length
@@ -15,8 +29,9 @@ public class Triangle {
 	 * @param a - adjacent length
 	 * @param t - theta - angle between hypotenuse and adjacent
 	 * @param d - degree mode (degrees if true, radians if false)
+	 * @return 
 	 */
-	Triangle(double h, double o, double a, double t, boolean d){
+	static Triangle solveTriangle(double h, double o, double a, double t, boolean d){
 		String solveMethod = "";
 		String angleMode = d ? "°" : "rad";
 		
@@ -49,16 +64,10 @@ public class Triangle {
 		}
 		if(d) t = Math.toDegrees(t);
 		
-		this.h = h;
-		this.o = o;
-		this.a = a;	
-		info.put("h", format2DP(h));
-		info.put("o", format2DP(o));
-		info.put("a", format2DP(a));
-		info.put("t", format2DP(t) + angleMode);
-		info.put("solveMethod", solveMethod);
-		normalizePoints();
+		Triangle triangle = new Triangle(h,o,a,format2DP(h),format2DP(o),format2DP(a),format2DP(t)+angleMode,solveMethod);
+		return triangle;
 	}
+	
 	
 
 	/**

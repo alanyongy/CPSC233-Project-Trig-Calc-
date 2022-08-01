@@ -63,10 +63,10 @@ public class GUIController {
 		
 		int xBound = 335;
 		int yBound = 10;
-		Point h = new Point(triangle.getHa(), triangle.getHo(), xBound, yBound);
-		Point o = new Point(triangle.getHo(), triangle.getOa(), xBound, yBound);
-		Point a = new Point(triangle.getHa(), triangle.getOa(), xBound, yBound);
-		Point t = new Point(triangle.getHa(), triangle.getHa(), xBound, yBound);
+		Point h = Point.solveMidpoint(triangle.getHa(), triangle.getHo(), xBound, yBound);
+		Point o = Point.solveMidpoint(triangle.getHo(), triangle.getOa(), xBound, yBound);
+		Point a = Point.solveMidpoint(triangle.getHa(), triangle.getOa(), xBound, yBound);
+		Point t = Point.solveMidpoint(triangle.getHa(), triangle.getHa(), xBound, yBound);
 		
 		moveOverlappingPoints(h, o, a, t);
 		
@@ -91,7 +91,7 @@ public class GUIController {
     	Double validatedA = validateInput("Adjacent", aTf.getText(), false);
     	Double validatedT = validateInput("Angle θ", tTf.getText(), true);
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-    	triangle = new Triangle(validatedH,validatedO,validatedA,validatedT, degrees); 
+    	triangle = Triangle.solveTriangle(validatedH,validatedO,validatedA,validatedT, degrees); 
     }
     
     

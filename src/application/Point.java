@@ -17,11 +17,13 @@ public class Point {
 	 * @param xBound - maximum x coordinate
 	 * @param yBound - minimum y coordinate
 	 */
-	Point(Point p1, Point p2, int xBound, int yBound) {
+	static Point solveMidpoint(Point p1, Point p2, int xBound, int yBound) {
 		double newX = (p1.getX()+p2.getX())/2;
 		double newY = (p1.getY()+p2.getY())/2;
-		x = (newX > xBound) ? xBound : newX;
-		y = (newY < yBound) ? yBound : newY;
+		double x = (newX > xBound) ? xBound : newX;
+		double y = (newY < yBound) ? yBound : newY;
+		Point point = new Point(x,y);
+		return point;
 	}
 
 	public double getX() {
