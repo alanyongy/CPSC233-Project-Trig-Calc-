@@ -83,9 +83,15 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="150">
                <children>
-                    <ToggleButton fx:id="degreesToggleButton" onAction="#toggleAngleMode" selected="true" text="Degrees" />
-                    <ToggleButton fx:id="radiansToggleButton" onAction="#toggleAngleMode" text="Radians" />
-                  <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="250" text="Calculate">
+                  <ToggleButton fx:id="degreesToggleButton" onAction="#toggleAngleMode" selected="true" text="Degrees" />
+                  <ToggleButton fx:id="radiansToggleButton" onAction="#toggleAngleMode" text="Radians" />
+                  <ToggleButton fx:id="valueToggleButton" onAction="#toggleValueMode" selected="true" text="Value" >
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </ToggleButton>
+                  <ToggleButton fx:id="variableToggleButton" onAction="#toggleValueMode" text="Variable" />
+                  <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="100" text="Calculate">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin></Button>

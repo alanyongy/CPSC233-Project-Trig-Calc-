@@ -28,6 +28,10 @@ public class GUIController {
     @FXML
     private ToggleButton radiansToggleButton;
     @FXML
+    private ToggleButton valueToggleButton;
+    @FXML
+    private ToggleButton variableToggleButton;
+    @FXML
     private Canvas canvas = new Canvas();
     @FXML
     private Text infoText;
@@ -36,54 +40,103 @@ public class GUIController {
 	
     @FXML
     void calculate() {
-    	//creating a new triangle object for us to manipulate as needed
-    	triangle = new Triangle();
+    	//clearing the error label as triangle calculations are independant of each other
+    	errorLabel.setText("");
+    	
+    	//creating a new triangle or VariableTriangle object for us to manipulate as needed
+    	//triangle is for calculating based off numeric values, whereas VariableTriangle is 
+    	//a child of Triangle and overrides certain methods in order to handle string entries.
+    	if(variableToggleButton.isSelected()) triangle = new VariableTriangle();
+    	else triangle = new Triangle();
     	
     	if(validateTotalInputs()) {
-    		//computes for the missing values of the triangle using validated user inputs
+    		//computing for the missing values of the triangle using validated user inputs
     		calculateTriangle();
     		
-    		//sets the current triangle sidelength/angle information to string values in the
+    		//setting the current triangle sidelength/angle information to string values in the
     		//triangle before they are manipulated by further methods for display purposes
+    		//This method is overridden in the VariableTriangle class in order to store 
+    		//algebraic formulas instead of calculated values for the sidelengths/angles.
     		triangle.storeTriangleInfo();
     		
-    		//scales the triangle to a suitable size for the canvas
+    		//scaling the triangle to a suitable size for the canvas
     		triangle.scaleTriangle();
     		
-    		//calculates the coordinates of each of the triangle's three corners.
+    		//calculating the coordinates of each of the (scaled) triangle's three corners.
     		triangle.calculatePointCoordinates();
     		
-    		//moves each of the triangle's points to let us display triangles 
-    		//with points of negative coordinates on the main quadrant 
+    		//moving each of the triangle's points to let us display triangles with points of 
+    		//negative coordinates on the main quadrant of the canvas (the canvas only shows +,+)
     		triangle.moveToPositiveQuadrant();
     		
-    		if(validateTriangle()) {
-    			//creates the necessary component for drawing on the canvas
+    		//validating that the triangle no longer has any sidelengths/angle at a value of 0
+    		if(triangle.validateTriangle()) {
+    			//creating the necessary component for drawing on the canvas
         		GraphicsContext gc = canvas.getGraphicsContext2D();
         		
-        		//draws the outline of the triangle
+        		//drawing the outline of the triangle
             	drawTriangle(gc);
             	
-            	//moves and sets labels according to the values of the triangle
+            	//moving and setting labels according to the values of the triangle
             	setTriangleLabels(gc);
             	
-            	//puts the solve method in the text area of the GUI.
+            	//putting the solve method in the text area of the GUI.
             	setInfoText();
+    		} else {
+        		if(errorLabel.getText().isEmpty()) 
+            		//if the triangle has 0 for h/o/a values, no errorlabel message change is needed as the
+        			//validateInput() method would already have set an errorlabel message, and should not be 
+        			//overwritten. Therefore there is only an errorlabel message for the isNaN case of validateTriangle().
+        			errorLabel.setText("Opp. and Adj. can't be larger than or equal to Hyp.");
     		}
     	}
     }
     
     /**
      * Validates the values in the text fields entered by the user, then asks the triangle
-     * to compute it's missing values.
+     * object to compute for it's own missing values.
      */
     void calculateTriangle() {
-    	Double validatedH = validateInput("Hypotenuse", hTf.getText());
-    	Double validatedO = validateInput("Opposite", oTf.getText());
-    	Double validatedA = validateInput("Adjacent", aTf.getText());
-    	Double validatedT = validateInput("Angle θ", tTf.getText());
     	boolean degrees = degreesToggleButton.isSelected() ? true : false;
+    	Double validatedH = validateInput("Hypotenuse", hTf.getText(), degrees);
+    	Double validatedO = validateInput("Opposite", oTf.getText(), degrees);
+    	Double validatedA = validateInput("Adjacent", aTf.getText(), degrees);
+    	Double validatedT = validateInput("Angle θ", tTf.getText(), degrees);
     	triangle.calculateMissingValues(validatedH,validatedO,validatedA,validatedT, degrees); 
+    }
+    
+    /**
+     * @param textField - The label of the textField that is currently being validated
+     * @param text - the text within the textField that is currently being validated
+     * @param degrees - whether or not the the degreesToggleButton is currently selected
+     * @return double value suitable for the triangle object; text parsed as a double or 
+     * 1 (for triangles of VariableTriangle class) if the text was valid, otherwise 0.
+     */
+    double validateInput(String textField, String text, boolean degrees) {
+    	//storing the user input for future use
+		triangle.storeUserInputs(textField, text);
+		
+		//setting the value to 0 is my default for a value that must be calculated for,
+		//this does not cause any issues since a valid triangle will never have 0 as a 
+		//value for any of it's side lengths or angles.
+		if(text.isEmpty()) return 0;
+		
+		//checkError is overridden in the child class of Triangle as the criteria for
+		//valid inputs change based on whether it is solving using values or variables names.
+    	String errorMessage = triangle.checkError(textField, text, degrees);
+    	
+    	//given that there is no error message, the input is valid, so a non-0 double will
+    	//be returned, either to be used in calculations or to signify that the user did
+    	//enter a value for this sidelength/angle.
+    	if(errorMessage.equals("")) {
+    		try {return Double.parseDouble(text);} 
+    		catch(NumberFormatException e) {return 1;}
+    	}
+    	
+    	//If the program has gotten to this point, the input is not valid, so the error 
+    	//message will be displayed and the default value of 0 will be returned.
+    	errorLabel.setText(errorMessage);
+    	return 0.0;
     }
    
 	/**
@@ -119,7 +172,7 @@ public class GUIController {
 		int yBound = 10;
 		
 		//setting values for overlap detection between labels
-		int overlapMinX = 50;
+		int overlapMinX = 100;
 		int overlapMinY = 15;
 		
 		//creating a new point for each label to be drawn at
@@ -167,59 +220,21 @@ public class GUIController {
     	}
     }
     
-	/**
-	 * Checks if the text field contains a valid side length value. 
-	 * Valid side lengths only contain digits, as well as up to one decimal and/or negative sign.
-	 * Valid angles are (90 > n > -90) in degrees mode, or (-π/2 > n > -π/2) in radians mode.
-	 * 0 Is not a valid side length or angle.
-	 * Sets the error label in GUI to a description of the error if the text field is invalid.
-	 * @param textField - the label of the input text field being checked
-	 * @param text - text within the input text field
-	 * @param isAngle - whether the input is the value of an angle
-	 * @return double value of text, otherwise 0.0
-	 */
-    Double validateInput(String textField, String text) {
-    	//initializing variables that keep track of unallowed or partially allowed values
-    	int dotCount = 0;
-    	int dashCount = 0;
-    	int otherCount = 0;
-		String errorDescription = "";
-		
-		//values for the triangle not set by the user should 
-		//be set to 0 to prevent Math class function errors.
-    	if(text.isEmpty()) return 0.0;
-    	
-    	//loops through the string to tally up previously initialized counters.
-    	for(int i = 0; i < text.length(); i++) {
-    		if(!Character.isDigit(text.charAt(i))){
-        		if(text.charAt(i) == '.') dotCount++;
-        		else if(text.charAt(i) == '-' && i == 0) dashCount++;
-        		else otherCount++;
-    		}
+    /**
+     * Toggles the value and variable button in the GUI such that one and only one is always active.
+     * @param trigger - value or variable GUI button that is clicked by the user
+     */
+    @FXML
+    void toggleValueMode(ActionEvent trigger) {
+    	//determines which button was clicked, and sets it to true, 
+    	//while also setting the other button false.
+    	if(trigger.getSource().equals(valueToggleButton)) {
+    		variableToggleButton.setSelected(false);
+    		valueToggleButton.setSelected(true);
+    	} else {
+    		valueToggleButton.setSelected(false);
+    		variableToggleButton.setSelected(true);
     	}
-    	
-    	//large amount of conditions that cover the many ways which a user may input an invalid value.
-    	if(dotCount > 1 || dashCount > 1 || otherCount >= 1 
-    			|| (textField == "Angle θ" && radiansToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= Math.PI/2)
-    			|| (textField == "Angle θ" && degreesToggleButton.isSelected() && Math.abs(Double.parseDouble(text)) >= 90) 
-    			|| (textField == "Hypotenuse" && Double.parseDouble(text) < 0) 
-    			|| Double.parseDouble(text) == 0) {
-    		
-    		//checks which above condition was violated, and sets the errorLabel message to an appropriate message.
-    		if (textField == "Angle θ") errorDescription = " must be less than 90° or π/2";
-    		else if(dotCount > 1) errorDescription = " can only contain one decimal point.";
-    		else if(dashCount > 1) errorDescription = " can only contain one negative sign.";
-    		else if(otherCount >= 1) errorDescription = " can only contain digits, decimals or neg. signs.";
-    		else if(textField == "Hypotenuse" && Double.parseDouble(text) < 0) errorDescription = " can not be less than 0.";
-    		else if(Double.parseDouble(text) == 0) errorDescription = " can not be equal to 0.";
-    		errorLabel.setText(textField + errorDescription);
-    		
-    		//returns 0 instead of the value in the text field because the value entered was invalid.
-    		return 0.0;
-    	}
-    	
-    	//return the double value of the string if the input was valid
-    	return Double.parseDouble(text);
     }
     
     /**
@@ -236,25 +251,6 @@ public class GUIController {
     	if (tTf.getText().isEmpty()) totalInputs++;
     	if (totalInputs != 2) {
     		errorLabel.setText("Only enter values for two components.");
-    		return false;
-    	}
-    	return true;
-    }
-    
-    
-    /**
-     * Checks if the created triangle has valid side lengths.
-     * 0 is not a valid side length.
-     * @return true if the triangle has valid side lengths, otherwise false
-     */
-    boolean validateTriangle() {
-    	//triangle.getH() will return NaN if it is unable to be calculated
-    	//due to entering impossible values for triangle side lengths (ie. opposite larger than hypotenuse)
-    	if (Double.isNaN(triangle.getH()) || triangle.getH() == 0 || triangle.getO() == 0 || triangle.getA() == 0) {
-    		//if the triangle has 0 for h/o/a values, no errorlabel message change is needed as the validateInput() 
-    		//method would already have set an errorlabel message. However, it still needs to return false here so 
-    		//that the triangle is not attempted to be drawn. Therefore there is only an errorlabel message for the isNaN case.
-    		if(errorLabel.getText().isEmpty()) errorLabel.setText("Opp. and Adj. can't be larger than Hypotenuse");
     		return false;
     	}
     	return true;
