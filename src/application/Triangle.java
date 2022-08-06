@@ -4,49 +4,30 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 
 public class Triangle {
-	private double h, o, a;
+	private double h, o, a, t;
+	private boolean d;
 	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
+	//A constructor is not necessary, I will use the basic empty constructor to initialize the triangle object,
+	//as all values of the triangle are dependent on user inputs or must be solved for through use of various methods below.
 	
 	/**
-	 * Triangle constructor. Sets the side length values as well as it's label information.
-	 * @param setH - hypotenuse length
-	 * @param setO - opposite length
-	 * @param setA - adjacent length
-	 * @param setInfoH - formatted hypotenuse length
-	 * @param setInfoO - formatted opposite length
-	 * @param setInfoA - formatted adjacent length
-	 * @param setInfoT - formatted degrees/radians value
-	 * @param setInfoSolveMethod - solve method and original formula
+	 * Solves for the missing values of the triangle using trigonometry.
+	 * @param h - hypotenuse side length of the triangle
+	 * @param o - opposite side length of the triangle
+	 * @param a - adjacent side length of the triangle
+	 * @param t - theta - angle between hypotenuse and adjacent side lengths
+	 * @param d - degree mode (degrees if true, radians if false) of value entered for theta
 	 */
-	Triangle(double setH, double setO, double setA, String setInfoH, String setInfoO, 
-			String setInfoA, String setInfoT, String setInfoSolveMethod) {
-		this.h = setH;
-		this.o = setO;
-		this.a = setA;	
-		info.put("h", setInfoH);
-		info.put("o", setInfoO);
-		info.put("a", setInfoA);
-		info.put("t", setInfoT);
-		info.put("solveMethod", setInfoSolveMethod);
-		normalizePoints();
-	}
-	
-	/**
-	 * Solves for the missing values, then creates a triangle with those values and solve method.
-	 * @param h - hypotenuse length
-	 * @param o - opposite length
-	 * @param a - adjacent length
-	 * @param t - theta - angle between hypotenuse and adjacent
-	 * @param d - degree mode (degrees if true, radians if false)
-	 * @return new triangle object
-	 */
-	static Triangle solveTriangle(double h, double o, double a, double t, boolean d){
+	void calculateMissingValues(double h, double o, double a, double t, boolean d){
 		String solveMethod = "";
-		String angleMode = d ? "°" : "rad";
 		
+		//determining whether it is necessary to parse the angle given by the user to radians
+		//since the Math library trigonometric functions only works in radians
 		if(d) t = Math.toRadians(t);
 		
+		//if side length/angle values aren't equal to 0, they have a value given by the user,
+		//and therefore should be used to calculate the values of the rest of the triangle.
 		if(h!=0 && o!=0) {
 			t = Math.asin(Math.abs(o)/Math.abs(h));
 			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
@@ -72,49 +53,58 @@ public class Triangle {
 			solveMethod += "o = a*tan(θ) \nRearranged from: tanθ = o/a";
 			h = Math.sqrt(a*a + o*o);
 		}
+		
+		//converting theta (back) into degrees if the user chose to calculate in degrees
 		if(d) t = Math.toDegrees(t);
-		Triangle triangle = new Triangle(h,o,a,format2DP(h),format2DP(o),format2DP(a),format2DP(t)+angleMode,solveMethod);
-		return triangle;
+		
+		//assigning the newly calculated values to the triangle
+		this.h = h;
+		this.o = o;
+		this.a = a;
+		this.t = t;
+		this.d = d;
+		
+		//we can store the solve method here since it does not
+		//need additional formatting to be displayed to the user
+		info.put("solveMethod", solveMethod);
 	}
 	
-	
-
 	/**
-	 * Sets number to 2 decimal places.
-	 * @param n - number
-	 * @return the number set to 2 decimal places
+	 * uses the triangle's current adjacent and opposite side length values
+	 * to determine the coordinates of each of the triangle's three corners.
 	 */
-	static String format2DP(double n){
-		DecimalFormat dec2 = new DecimalFormat("#0.00");
-		return dec2.format(n);
+	void calculatePointCoordinates() {
+		this.ho = new Point(a/2,-o/2);
+		this.ha = new Point(-a/2,o/2);
+		this.oa = new Point(a/2,o/2);
 	}
-	
 
 	/**
-	 *Creates points for the triangle.
-	 *Reflects the points of the triangle over the x/y axis such that they are all positive. 
 	 *Scales up/down the size (point coordinates) of the triangle such that it's largest length 
 	 *(relative to canvas edge length) uses the entire canvas (maxW, maxH)
 	 */
-	void normalizePoints(){
+	void scaleTriangle(){
+		//maximum size that triangle should take up in x and y dimensions
 		double maxW = 360;
 		double maxH = 180;
 		double scale = 1;
 		
-		//determine the side length with length closest to it's respective window side length
 		//scale triangle size to use the entire canvas without distorting x:y ratio
+		//by picking the most appropriate scale to use between the x and y dimension
+		//by determining the side length with length closest to it's respective window side length
 		if(Math.abs(o)/maxH > Math.abs(a)/maxW) scale = maxH / Math.abs(o);
 		else scale = maxW / Math.abs(a);
 		o *= scale;
 		a *= scale;
 		h = Math.sqrt(o*o + a*a);
-		
-		//side length opposite is reversed to counter-act canvas' flipped y axis
-		this.ho = new Point(a/2,-o/2);
-		this.ha = new Point(-a/2,o/2);
-		this.oa = new Point(a/2,o/2);
-		
-		//reflecting triangle across x/y axis as needed to keep all triangle points on main quadrant
+	}
+	
+	
+	/**
+	 *Translates the points of the triangle over the x/y axis such that they are all positive. 
+	 */
+	void moveToPositiveQuadrant() {
+		//translating triangle across x/y axis as needed to keep all triangle points on main quadrant (positive, positive)
 		if(ho.getX() < 0) translatePoints(Math.abs(ho.getX()), 0);
 		if(ho.getY() < 0) translatePoints(0, Math.abs(ho.getY()));
 		if(ha.getX() < 0) translatePoints(Math.abs(ha.getX()), 0);
@@ -125,8 +115,8 @@ public class Triangle {
 	
 	/**
 	 * Moves all points of the triangle right by x, down by y.
-	 * @param x - horizontal direction
-	 * @param y - vertical direction
+	 * @param x - value of horizontal direction to move point by
+	 * @param y - value of vertical direction to move point by
 	 */
 	void translatePoints(double x, double y){
 		ho.setX(ho.getX()+x);
@@ -136,50 +126,96 @@ public class Triangle {
 		oa.setX(oa.getX()+x);
 		oa.setY(oa.getY()+y);
 	}
+
+	/**
+	 * takes the triangle's current sidelength and angle values,
+	 * formats them into strings with 2 decimal places, and stores
+	 * them in the triangle's information hashmap
+	 */
+	void storeTriangleInfo(){
+		//creation of component to format doubles into 2 decimal places
+		DecimalFormat dec2 = new DecimalFormat("#0.00");
+		
+		//converting the boolean degree mode used to calculate 
+		//the triangle into text that makes sense to the user
+		String angleMode = d ? "°" : "rad";
+		
+		//storing formatted information into the hashmap of the triangle object
+		info.put("h", dec2.format(h));
+		info.put("o", dec2.format(o));
+		info.put("a", dec2.format(a));
+		info.put("t", dec2.format(t)+angleMode);
+	}
 	
+	/**
+	 * @return hypotenuse side length value of triangle object
+	 */
 	public double getH() {
 		return h;
 	}
 
+	/**
+	 * @param hypotenuse side length value of triangle object to set
+	 */
 	public void setH(double h) {
 		this.h = h;
 	}
 
+	/**
+	 * @return opposite side length of triangle object
+	 */
 	public double getO() {
 		return o;
 	}
 
+	/**
+	 * @param opposite side length value of triangle object
+	 */
 	public void setO(double o) {
 		this.o = o;
 	}
 
+	/**
+	 * @return adjacent side length of triangle object
+	 */
 	public double getA() {
 		return a;
 	}
 
+	/**
+	 * @param adjacent side length value of triangle object
+	 */
 	public void setA(double a) {
 		this.a = a;
 	}
 
+	/**
+	 * @return point object representing triangle object's corner between opposite and hypotenuse side lengths
+	 */
 	public Point getHo() {
 		Point newHo = new Point(ho.getX(), ho.getY());
 		return newHo;
 	}
 	
+	/**
+	 * @return point object representing triangle object's corner between hypotenuse and adjacent side lengths
+	 */
 	public Point getHa() {
 		Point newHa = new Point(ha.getX(), ha.getY());
 		return newHa;
 	}
 	
+	/**
+	 * @return point object representing triangle object's corner between opposite and adjacent side lengths
+	 */
 	public Point getOa() {
 		Point newOa = new Point(oa.getX(), oa.getY());
 		return newOa;
 	}
 
 	/**
-	 * Returns value of info.get(key) (Does not return a reference)
-	 * @param key
-	 * @return String value of info.get(key)
+	 * @param key - key in hashmap to retrieve the value of.
+	 * @return value of the string variable stored at key location in hashmap
 	 */
 	public String getInfo(String key) {
 		String newStr = new String(info.get(key));
