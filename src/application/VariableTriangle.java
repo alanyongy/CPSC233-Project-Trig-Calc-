@@ -1,5 +1,8 @@
 package application;
 
+//child class of Triangle, used to override methods such that unknown 
+//side lengths/angle are solved for in terms of the given variables,
+//outputting algebraic formulas instead of concrete values.
 public class VariableTriangle extends Triangle {
 	String hInfo = "", oInfo = "", aInfo = "", tInfo = "";
 	

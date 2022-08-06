@@ -37,6 +37,8 @@ public class GUIController {
     private Text infoText;
     @FXML
     private Label errorLabel; 
+    @FXML
+    private Label instructionLabel;
 	
     @FXML
     void calculate() {
@@ -222,6 +224,7 @@ public class GUIController {
     
     /**
      * Toggles the value and variable button in the GUI such that one and only one is always active.
+     * Sets the label at the top of GUI to prompt user to input the correct value type.
      * @param trigger - value or variable GUI button that is clicked by the user
      */
     @FXML
@@ -231,9 +234,11 @@ public class GUIController {
     	if(trigger.getSource().equals(valueToggleButton)) {
     		variableToggleButton.setSelected(false);
     		valueToggleButton.setSelected(true);
+    		instructionLabel.setText("Enter Two Numeric Values: ");
     	} else {
     		valueToggleButton.setSelected(false);
     		variableToggleButton.setSelected(true);
+    		instructionLabel.setText("Enter Two Variable Names: ");
     	}
     }
     

@@ -20,7 +20,7 @@ public class Main extends Application {
 			controller.applicationStage = primaryStage;
 			Scene scene = new Scene(root,400,620); 
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Trigonometry Calculator");
+			primaryStage.setTitle("Right Triangle Trigonometry Calculator");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

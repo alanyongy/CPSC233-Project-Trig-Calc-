@@ -17,7 +17,7 @@
          <children>
             <HBox prefWidth="150">
                <children>
-                  <Label text="Enter Two Values:" />
+                  <Label fx:id="instructionLabel" text="Enter Two Numeric Values:" />
                   <Label fx:id="errorLabel" textFill="red">
                      <HBox.margin>
                         <Insets left="10.0" />
