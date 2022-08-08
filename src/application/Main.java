@@ -18,7 +18,7 @@ public class Main extends Application {
 			BorderPane root = loader.load(new FileInputStream("src/application/GUI.fxml" ));
 			GUIController controller = (GUIController) loader.getController();
 			controller.applicationStage = primaryStage;
-			Scene scene = new Scene(root,400,620); 
+			Scene scene = new Scene(root,400,630); 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Right Triangle Trigonometry Calculator");
 			primaryStage.setResizable(false);

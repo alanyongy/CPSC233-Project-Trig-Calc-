@@ -4,7 +4,21 @@ package application;
 //side lengths/angle are solved for in terms of the given variables,
 //outputting algebraic formulas instead of concrete values.
 public class FormulaTriangle extends Triangle {
-	String hInfo = "", oInfo = "", aInfo = "", tInfo = "";
+	static String hInfo = "", oInfo = "", aInfo = "", tInfo = "";
+	
+	
+	/**FormulaTriangle Constructor. All values are passed to the parent class Triangle,
+	 * as any differences in the process between the two triangle types are handled
+	 * with overridden methods rather than differences in the constructor.
+	 * @param inputH - value entered for hypotenuse side length
+	 * @param inputO - value entered for opposite side length
+	 * @param inputA - value entered for adjacent side length
+	 * @param inputT - value entered for angle theta
+	 * @param degrees - degree mode - true for degrees, false for radians
+	 */
+	FormulaTriangle(String inputH, String inputO, String inputA, String inputT, boolean degrees){
+		super(inputH, inputO, inputA, inputT, degrees);
+	}
 	
 	/**
 	 * Solves for a formula representing the missing values of the triangle's sidelengths or angle

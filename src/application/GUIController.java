@@ -48,37 +48,27 @@ public class GUIController {
     @FXML
     private Button informationButton;
 	
+    /**
+     * Navigates through the necessary processes
+     */
     @FXML
     void calculate() {
-    	//clearing the error label as triangle calculations are independant of each other
+    	//clearing the error label as triangle calculations are independent of each other
     	errorLabel.setText("");
     	
-    	//creating a new triangle or FormulaTriangle object for us to manipulate as needed
-    	//triangle is for calculating based off numeric values, whereas FormulaTriangle is 
-    	//a child of Triangle and overrides certain methods in order to handle string entries.
-    	if(formulaToggleButton.isSelected()) triangle = new FormulaTriangle();
-    	else triangle = new Triangle();
-    	
-    	if(validateTotalInputs()) {
-    		//computing for the missing values of the triangle using validated user inputs
-    		calculateTriangle();
-    		
-    		//setting the current triangle sidelength/angle information to string values in the
-    		//triangle before they are manipulated by further methods for display purposes
-    		//This method is overridden in the FormulaTriangle class in order to store 
-    		//algebraic formulas instead of calculated values for the sidelengths/angles.
-    		triangle.storeTriangleInfo();
-    		
-    		//scaling the triangle to a suitable size for the canvas
-    		triangle.scaleTriangle();
-    		
-    		//calculating the coordinates of each of the (scaled) triangle's three corners.
-    		triangle.calculatePointCoordinates();
-    		
-    		//moving each of the triangle's points to let us display triangles with points of 
-    		//negative coordinates on the main quadrant of the canvas (the canvas only shows +,+)
-    		triangle.moveToPositiveQuadrant();
-    		
+    	if(checkTwoTotalInputs()) {
+        	//creating a new triangle or FormulaTriangle object, giving it the contents of the GUI.
+        	//triangle is for calculating based off numeric values, whereas FormulaTriangle is 
+        	//a child of Triangle which overrides certain methods in order to handle string entries
+    		//to calculate for an algebraic formula which incorporates the user's inputs instead.
+        	boolean degrees = degreesToggleButton.isSelected() ? true : false;
+        	if(formulaToggleButton.isSelected()) 
+        		triangle = new FormulaTriangle(hTf.getText(),oTf.getText(),aTf.getText(),tTf.getText(), degrees);
+        	else triangle = new Triangle(hTf.getText(),oTf.getText(),aTf.getText(),tTf.getText(), degrees);
+        	
+        	//setting the errorLabel to notify user of any potential 
+        	errorLabel.setText(triangle.getErrorDescription());
+        	
     		//validating that the triangle no longer has any sidelengths/angle at a value of 0
     		if(triangle.validateTriangle()) {
     			//creating the necessary component for drawing on the canvas
@@ -100,53 +90,6 @@ public class GUIController {
         			errorLabel.setText("Opp. and Adj. can't be larger than or equal to Hyp.");
     		}
     	}
-    }
-    
-    /**
-     * Validates the values in the text fields entered by the user, then asks the triangle
-     * object to compute for it's own missing values.
-     */
-    void calculateTriangle() {
-    	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-    	Double validatedH = validateInput("Hypotenuse", hTf.getText(), degrees);
-    	Double validatedO = validateInput("Opposite", oTf.getText(), degrees);
-    	Double validatedA = validateInput("Adjacent", aTf.getText(), degrees);
-    	Double validatedT = validateInput("Angle θ", tTf.getText(), degrees);
-    	triangle.calculateMissingValues(validatedH,validatedO,validatedA,validatedT, degrees); 
-    }
-    
-    /**
-     * @param textField - The label of the textField that is currently being validated
-     * @param text - the text within the textField that is currently being validated
-     * @param degrees - whether or not the the degreesToggleButton is currently selected
-     * @return double value suitable for the triangle object; text parsed as a double or 
-     * 1 (for triangles of FormulaTriangle class) if the text was valid, otherwise 0.
-     */
-    double validateInput(String textField, String text, boolean degrees) {
-    	//storing the user input for future use
-		triangle.storeUserInputs(textField, text);
-		
-		//setting the value to 0 is my default for a value that must be calculated for,
-		//this does not cause any issues since a valid triangle will never have 0 as a 
-		//value for any of it's side lengths or angles.
-		if(text.isEmpty()) return 0;
-		
-		//checkError is overridden in the child class of Triangle as the criteria for
-		//valid inputs change based on whether it is solving using values or formulas names.
-    	String errorMessage = triangle.checkError(textField, text, degrees);
-    	
-    	//given that there is no error message, the input is valid, so a non-0 double will
-    	//be returned, either to be used in calculations or to signify that the user did
-    	//enter a value for this sidelength/angle.
-    	if(errorMessage.equals("")) {
-    		try {return Double.parseDouble(text);} 
-    		catch(NumberFormatException e) {return 1;}
-    	}
-    	
-    	//If the program has gotten to this point, the input is not valid, so the error 
-    	//message will be displayed and the default value of 0 will be returned.
-    	errorLabel.setText(errorMessage);
-    	return 0.0;
     }
    
 	/**
@@ -196,10 +139,10 @@ public class GUIController {
 		
 		//writes the label information at their respective locations
 		graphics.setFill(Color.RED);
-		graphics.fillText(triangle.getInfo("h"), h.getX(), h.getY());
-		graphics.fillText(triangle.getInfo("o"), o.getX(), o.getY());
-		graphics.fillText(triangle.getInfo("a"), a.getX(), a.getY());
-		graphics.fillText(triangle.getInfo("t"), t.getX(), t.getY());
+		graphics.fillText("H: " + triangle.getInfo("h"), h.getX(), h.getY());
+		graphics.fillText("O: " + triangle.getInfo("o"), o.getX(), o.getY());
+		graphics.fillText("A: " + triangle.getInfo("a"), a.getX(), a.getY());
+		graphics.fillText("θ: " + triangle.getInfo("t"), t.getX(), t.getY());
 	}
 	
 	/**
@@ -254,7 +197,7 @@ public class GUIController {
      * Checks if exactly two values were input by the user within the text fields.
      * @return true if exactly two values were entered, otherwise false
      */
-    boolean validateTotalInputs() {
+    boolean checkTwoTotalInputs() {
     	int totalInputs = 0;
     	
     	//checks each text field and increments the counter for each text field that isn't empty
@@ -347,10 +290,10 @@ public class GUIController {
 		
 		Label infoLabel = new Label("This program creates a right triangle based off two entered values "
 				+ "(sidelengths or angle) and outputs the values of all sidelengths and the inner angle. "
-				+ "\n\nDegree / Radians: Changes whether the value entered, as well as the final value "
-				+ "is read and shown as Degrees or Radians. \n\nValue: Solves for numeric values. negative "
-				+ "values may be entered for the opposite and adjacent side lengths. "
-				+ "\n\nFormula: Solves for transformative algebraic formulas. Useful for figuring out what "
+				+ "\n\nDegree / Radians: \nChanges whether the value entered, as well as the final value "
+				+ "is read and shown as Degrees or Radians. \n\nValue: \nSolves for numeric values. negative "
+				+ "Values may be entered for the opposite and adjacent side lengths. "
+				+ "\n\nFormula: \nSolves for transformative algebraic formulas. Useful for figuring out what "
 				+ "formulas to use in your programming projects. For example, entering distance(a,b) and "
 				+ "a.getX()-b.getX() for the hypotenuse and adjacent respectively to find an algebraic formula "
 				+ "for getting the angle between the two objects.");
@@ -388,13 +331,13 @@ public class GUIController {
 		headerLabel.setFont(new Font("Verdana", 30));
 		
 		Label infoLabel = new Label("Entered values which do not meet these requirements will be "
-				+ "accompanied with an error message. \n\nValue Mode:\nHypotenuse: Positive values only. "
-				+ "\nOpposite: Positive or negative values. \nAdjacent: Positive or negative values."
-				+ "\nAngle θ: Positive values only. Must be under 90° in Degrees mode, or π/2 in Radians "
-				+ "mode. \nAll values may include a decimal for increased precision. \n\nFormula mode:"
-				+ "\nFormula names may not start with a number. All other entries are valid." );
+				+ "accompanied with an error message. \n\nValue Mode:\nAll values may include a decimal "
+				+ "for increased precision. \nHypotenuse: Positive values only. \nOpposite: Positive or "
+				+ "negative values. \nAdjacent: Positive or negative values. \nAngle θ: Positive values "
+				+ "only. Must be under 90° in Degrees mode, or π/2 in Radians mode.\n\nFormula Mode: "
+				+ "\nAll entries are valid." );
 		infoLabel.setWrapText(true);
-		infoLabel.setFont(new Font(16));
+		infoLabel.setFont(new Font(17));
 		
 		VBox labelBox = new VBox();
 		labelBox.setMaxWidth(245);

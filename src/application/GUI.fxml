@@ -98,6 +98,9 @@
                         <Insets left="10.0" />
                      </HBox.margin></Button>
                </children>
+               <VBox.margin>
+                  <Insets top="10.0" />
+               </VBox.margin>
             </HBox>
             <Canvas fx:id="canvas" height="200" width="400">
                <VBox.margin>
