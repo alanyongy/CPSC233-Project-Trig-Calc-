@@ -15,18 +15,20 @@
    <top>
       <VBox prefHeight="150" prefWidth="150" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefWidth="150">
+            <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="instructionLabel" text="Enter Two Numeric Values:" />
-                  <Label fx:id="errorLabel" textFill="red">
+                  <VBox prefHeight="34.0" prefWidth="321.0">
+                     <children>
+                        <Label fx:id="instructionLabel" text="Enter Two Numeric Values:" />
+                        <Label fx:id="errorLabel" textFill="red" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="informationButton" alignment="TOP_RIGHT" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#switchToAboutScene" text="Information">
                      <HBox.margin>
-                        <Insets left="10.0" />
+                        <Insets left="-20.0" right="20.0" />
                      </HBox.margin>
-                  </Label>
+                  </Button>
                </children>
-               <padding>
-                  <Insets top="10.0" />
-               </padding>
             </HBox>
             <HBox prefWidth="150">
                <children>
@@ -85,12 +87,12 @@
                <children>
                   <ToggleButton fx:id="degreesToggleButton" onAction="#toggleAngleMode" selected="true" text="Degrees" />
                   <ToggleButton fx:id="radiansToggleButton" onAction="#toggleAngleMode" text="Radians" />
-                  <ToggleButton fx:id="valueToggleButton" onAction="#toggleValueMode" selected="true" text="Value" >
+                  <ToggleButton fx:id="valueToggleButton" onAction="#toggleValueMode" selected="true" text="Value">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
                   </ToggleButton>
-                  <ToggleButton fx:id="variableToggleButton" onAction="#toggleValueMode" text="Variable" />
+                  <ToggleButton fx:id="formulaToggleButton" onAction="#toggleValueMode" text="Formula" />
                   <Button mnemonicParsing="false" onAction="#calculate" prefHeight="25.0" prefWidth="100" text="Calculate">
                      <HBox.margin>
                         <Insets left="10.0" />

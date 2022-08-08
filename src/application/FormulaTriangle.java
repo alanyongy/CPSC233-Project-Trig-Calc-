@@ -3,7 +3,7 @@ package application;
 //child class of Triangle, used to override methods such that unknown 
 //side lengths/angle are solved for in terms of the given variables,
 //outputting algebraic formulas instead of concrete values.
-public class VariableTriangle extends Triangle {
+public class FormulaTriangle extends Triangle {
 	String hInfo = "", oInfo = "", aInfo = "", tInfo = "";
 	
 	/**
@@ -28,27 +28,27 @@ public class VariableTriangle extends Triangle {
 		//if side length/angle values aren't equal to 0, they have a value given by the user,
 		//and therefore should be used to calculate the values of the rest of the triangle.
 		if(h!=0 && o!=0) {
-			tInfo = "aSin(" + oInput + "/" + hInput + ")";
+			tInfo = "aSin(" + oInput + " / " + hInput + ")";
 			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
-			aInfo = "sqrt(" + hInput + "^2 + " + oInput + "^2)";
+			aInfo = "sqrt(" + hInput + "^2 - " + oInput + "^2)";
 		} else if(h!=0 && a!=0) {
-			tInfo = "aCos(" + aInput + "/" + hInput + ")";
+			tInfo = "aCos(" + aInput + " / " + hInput + ")";
 			solveMethod += "θ = aCos(a/h) \nRearranged from: cosθ = a/h";
-			oInfo = "sqrt(" + hInput + "^2 + " + aInput + "^2)";
+			oInfo = "sqrt(" + hInput + "^2 - " + aInput + "^2)";
 		} else if(h!=0 && t!=0) {
-			oInfo = hInput + "*sin(" + tInput + ")";
-			aInfo = hInput + "*cos(" + tInput + ")";
-			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nFormula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
+			oInfo = hInput + " * sin(" + tInput + ")";
+			aInfo = hInput + " * cos(" + tInput + ")";
+			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nTrig. Formula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
-			tInfo = "aTan(" + oInput + "/" + aInput + ")";
+			tInfo = "aTan(" + oInput + " / " + aInput + ")";
 			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";
 			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
 		} else if(o!=0 && t!=0) {
-			aInfo = oInput + "/tan(" + tInput + ")";
+			aInfo = oInput + " / tan(" + tInput + ")";
 			solveMethod += "a = o/tan(θ) \nRearranged from: tanθ = o/a";
 			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
 		} else if(a!=0 && t!=0) {
-			oInfo = aInput + "*tan(" + tInput + ")";
+			oInfo = aInput + " * tan(" + tInput + ")";
 			solveMethod += "o = a*tan(θ) \nRearranged from: tanθ = o/a";
 			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
 		}
@@ -65,11 +65,8 @@ public class VariableTriangle extends Triangle {
 	}
     
 	/**
-	 * Checks if the text field contains a valid side length/angle for a variable name based 
-	 * triangle. The user may want to solve for a algebraic formula for a language outside of 
-	 * java, so all variable names are valid, except for those which start with numbers (to 
-	 * prevent confusion in understanding the output formula) Sets the error label in GUI to 
-	 * a description of the error if the text field is invalid.
+	 * The user may want to solve for a algebraic formula for a language outside of 
+	 * java, so all variable names are valid.
 	 * @param textField - the label of the input text field being checked
 	 * @param text - text within the input text field being checked
 	 * @param degreesMode - whether the program is currently calculating in degrees or radians
@@ -77,8 +74,6 @@ public class VariableTriangle extends Triangle {
 	 */
 	@Override
     String checkError(String textField, String text, boolean degreesMode) {
-    	if(text.length() > 0 && Character.isDigit(text.charAt(0)))
-    		setErrorDescription(textField + " should not be a variable name starting with a number.");
     	return getErrorDescription();
     }
 	

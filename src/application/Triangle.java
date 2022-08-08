@@ -46,7 +46,7 @@ public class Triangle {
 		} else if(h!=0 && t!=0) {
 			o = h*Math.sin(t);
 			a = h*Math.cos(t);
-			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nFormula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
+			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nTrig. Formula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
 			t = Math.atan(Math.abs(o)/Math.abs(a));
 			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";

@@ -21,6 +21,7 @@ public class Main extends Application {
 			Scene scene = new Scene(root,400,620); 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Right Triangle Trigonometry Calculator");
+			primaryStage.setResizable(false);
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();

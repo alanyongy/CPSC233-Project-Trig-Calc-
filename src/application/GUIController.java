@@ -1,18 +1,24 @@
 package application;
 
-import java.awt.Font;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GUIController {
 	Stage applicationStage;
+	Scene mainScene;
+	boolean mainSceneSet = false;
     Triangle triangle;
 	
     @FXML
@@ -30,7 +36,7 @@ public class GUIController {
     @FXML
     private ToggleButton valueToggleButton;
     @FXML
-    private ToggleButton variableToggleButton;
+    private ToggleButton formulaToggleButton;
     @FXML
     private Canvas canvas = new Canvas();
     @FXML
@@ -39,16 +45,18 @@ public class GUIController {
     private Label errorLabel; 
     @FXML
     private Label instructionLabel;
+    @FXML
+    private Button informationButton;
 	
     @FXML
     void calculate() {
     	//clearing the error label as triangle calculations are independant of each other
     	errorLabel.setText("");
     	
-    	//creating a new triangle or VariableTriangle object for us to manipulate as needed
-    	//triangle is for calculating based off numeric values, whereas VariableTriangle is 
+    	//creating a new triangle or FormulaTriangle object for us to manipulate as needed
+    	//triangle is for calculating based off numeric values, whereas FormulaTriangle is 
     	//a child of Triangle and overrides certain methods in order to handle string entries.
-    	if(variableToggleButton.isSelected()) triangle = new VariableTriangle();
+    	if(formulaToggleButton.isSelected()) triangle = new FormulaTriangle();
     	else triangle = new Triangle();
     	
     	if(validateTotalInputs()) {
@@ -57,7 +65,7 @@ public class GUIController {
     		
     		//setting the current triangle sidelength/angle information to string values in the
     		//triangle before they are manipulated by further methods for display purposes
-    		//This method is overridden in the VariableTriangle class in order to store 
+    		//This method is overridden in the FormulaTriangle class in order to store 
     		//algebraic formulas instead of calculated values for the sidelengths/angles.
     		triangle.storeTriangleInfo();
     		
@@ -112,7 +120,7 @@ public class GUIController {
      * @param text - the text within the textField that is currently being validated
      * @param degrees - whether or not the the degreesToggleButton is currently selected
      * @return double value suitable for the triangle object; text parsed as a double or 
-     * 1 (for triangles of VariableTriangle class) if the text was valid, otherwise 0.
+     * 1 (for triangles of FormulaTriangle class) if the text was valid, otherwise 0.
      */
     double validateInput(String textField, String text, boolean degrees) {
     	//storing the user input for future use
@@ -124,7 +132,7 @@ public class GUIController {
 		if(text.isEmpty()) return 0;
 		
 		//checkError is overridden in the child class of Triangle as the criteria for
-		//valid inputs change based on whether it is solving using values or variables names.
+		//valid inputs change based on whether it is solving using values or formulas names.
     	String errorMessage = triangle.checkError(textField, text, degrees);
     	
     	//given that there is no error message, the input is valid, so a non-0 double will
@@ -149,7 +157,7 @@ public class GUIController {
 		//clears the canvas so that the previously drawn triangle (if applicable) is cleared.
 		graphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		
-		//setting triangle values to variables to clean up further calculations
+		//setting triangle values to formulas to clean up further calculations
 		double haX = triangle.getHa().getX();
 		double haY = triangle.getHa().getY();
 		double hoX = triangle.getHo().getX();
@@ -202,7 +210,7 @@ public class GUIController {
     			"\nOpposite: " + triangle.getInfo("o") + 
     			"\nAdjacent: " + triangle.getInfo("a") + 
     			"\nAngle θ: " + triangle.getInfo("t")  + 
-    			"\n\nFormula Used: " + triangle.getInfo("solveMethod"));
+    			"\n\nTrig. Formula Used: " + triangle.getInfo("solveMethod"));
 	}
     
     /**
@@ -223,22 +231,22 @@ public class GUIController {
     }
     
     /**
-     * Toggles the value and variable button in the GUI such that one and only one is always active.
+     * Toggles the value and formula button in the GUI such that one and only one is always active.
      * Sets the label at the top of GUI to prompt user to input the correct value type.
-     * @param trigger - value or variable GUI button that is clicked by the user
+     * @param trigger - value or formula GUI button that is clicked by the user
      */
     @FXML
     void toggleValueMode(ActionEvent trigger) {
     	//determines which button was clicked, and sets it to true, 
     	//while also setting the other button false.
     	if(trigger.getSource().equals(valueToggleButton)) {
-    		variableToggleButton.setSelected(false);
+    		formulaToggleButton.setSelected(false);
     		valueToggleButton.setSelected(true);
     		instructionLabel.setText("Enter Two Numeric Values: ");
     	} else {
     		valueToggleButton.setSelected(false);
-    		variableToggleButton.setSelected(true);
-    		instructionLabel.setText("Enter Two Variable Names: ");
+    		formulaToggleButton.setSelected(true);
+    		instructionLabel.setText("Enter Two Strings (see Information): ");
     	}
     }
     
@@ -302,7 +310,7 @@ public class GUIController {
 	 * @param yBound - minimum y coordinate of new point
 	 * @return new point object with coordinates averaged from the two points
 	 */
-	static Point calculateMidpoint(Point p1, Point p2, int xBound, int yBound) {
+	Point calculateMidpoint(Point p1, Point p2, int xBound, int yBound) {
 		//get the average X coordinate between the two points
 		double newX = (p1.getX()+p2.getX())/2;
 		
@@ -315,6 +323,92 @@ public class GUIController {
 		
 		Point point = new Point(x,y);
 		return point;
+	}
+	
+	@FXML
+	void switchToAboutScene(){
+		if(!mainSceneSet) {
+			mainScene = applicationStage.getScene();
+			mainSceneSet = true;
+		}
+		
+		Button backButton = new Button("Back to Calculator");
+		backButton.setOnAction(doneEvent -> applicationStage.setScene(mainScene));
+		
+		Button validationInfoButton = new Button("Validation Info.");
+		validationInfoButton.setOnAction(doneEvent -> switchToValidationScene());
+		
+		VBox buttonBox = new VBox();
+		buttonBox.setAlignment(Pos.TOP_RIGHT);
+		buttonBox.getChildren().addAll(validationInfoButton, backButton);
+		
+		Label headerLabel = new Label("About");
+		headerLabel.setFont(new Font("Verdana", 30));
+		
+		Label infoLabel = new Label("This program creates a right triangle based off two entered values "
+				+ "(sidelengths or angle) and outputs the values of all sidelengths and the inner angle. "
+				+ "\n\nDegree / Radians: Changes whether the value entered, as well as the final value "
+				+ "is read and shown as Degrees or Radians. \n\nValue: Solves for numeric values. negative "
+				+ "values may be entered for the opposite and adjacent side lengths. "
+				+ "\n\nFormula: Solves for transformative algebraic formulas. Useful for figuring out what "
+				+ "formulas to use in your programming projects. For example, entering distance(a,b) and "
+				+ "a.getX()-b.getX() for the hypotenuse and adjacent respectively to find an algebraic formula "
+				+ "for getting the angle between the two objects.");
+		infoLabel.setWrapText(true);
+		infoLabel.setFont(new Font(15));
+		
+		VBox labelBox = new VBox();
+		labelBox.setMaxWidth(245);
+		labelBox.getChildren().addAll(headerLabel, infoLabel);
+		
+		HBox.setMargin(labelBox, new Insets(10,10,10,10));
+		HBox.setMargin(buttonBox, new Insets(10,10,10,10));
+		
+		HBox mainBox = new HBox();
+		mainBox.getChildren().addAll(labelBox,buttonBox);
+		
+		applicationStage.setScene(new Scene(mainBox, mainScene.getWidth(), mainScene.getHeight()));
+		
+		validationInfoButton.setPrefWidth(backButton.getBoundsInParent().getWidth());
+	}
+	
+	@FXML
+	void switchToValidationScene() {
+		Button infoButton = new Button("Back to Info.");
+		infoButton.setOnAction(doneEvent -> switchToAboutScene());
+		
+		Button backButton = new Button("Back to Calculator");
+		backButton.setOnAction(doneEvent -> applicationStage.setScene(mainScene));
+		
+		VBox buttonBox = new VBox();
+		buttonBox.setAlignment(Pos.TOP_RIGHT);
+		buttonBox.getChildren().addAll(infoButton, backButton);
+		
+		Label headerLabel = new Label("Validation");
+		headerLabel.setFont(new Font("Verdana", 30));
+		
+		Label infoLabel = new Label("Entered values which do not meet these requirements will be "
+				+ "accompanied with an error message. \n\nValue Mode:\nHypotenuse: Positive values only. "
+				+ "\nOpposite: Positive or negative values. \nAdjacent: Positive or negative values."
+				+ "\nAngle θ: Positive values only. Must be under 90° in Degrees mode, or π/2 in Radians "
+				+ "mode. \nAll values may include a decimal for increased precision. \n\nFormula mode:"
+				+ "\nFormula names may not start with a number. All other entries are valid." );
+		infoLabel.setWrapText(true);
+		infoLabel.setFont(new Font(16));
+		
+		VBox labelBox = new VBox();
+		labelBox.setMaxWidth(245);
+		labelBox.getChildren().addAll(headerLabel, infoLabel);
+		
+		HBox.setMargin(labelBox, new Insets(10,10,10,10));
+		HBox.setMargin(buttonBox, new Insets(10,10,10,10));
+		
+		HBox mainBox = new HBox();
+		mainBox.getChildren().addAll(labelBox,buttonBox);
+		
+		applicationStage.setScene(new Scene(mainBox, mainScene.getWidth(), mainScene.getHeight()));
+		
+		infoButton.setPrefWidth(backButton.getBoundsInParent().getWidth());
 	}
 }
 
