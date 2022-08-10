@@ -29,31 +29,17 @@ public class GUIController {
     Triangle oldTriangle;
 	
     @FXML
-    private TextField hypotenuseTextField;
+    private TextField hypotenuseTextField, adjacentTextField, oppositeTextField, angleThetaTextField;
     @FXML
-    private TextField adjacentTextField;
-    @FXML
-    private TextField oppositeTextField;
-    @FXML
-    private TextField angleThetaTextField;
-    @FXML
-    private ToggleButton degreesToggleButton;
-    @FXML
-    private ToggleButton radiansToggleButton;
-    @FXML
-    private ToggleButton valueToggleButton;
-    @FXML
-    private ToggleButton formulaToggleButton;
+    private ToggleButton degreesToggleButton, radiansToggleButton, valueToggleButton, formulaToggleButton;
+	@FXML
+	private Button informationButton, nextButton, previousButton;
     @FXML
     private Canvas mainCanvas = new Canvas();
     @FXML
     private Text infoAreaText;
     @FXML
-    private Label errorLabel; 
-    @FXML
-    private Label instructionLabel;
-    @FXML
-    private Button informationButton;
+    private Label errorLabel, instructionLabel; 
 	@FXML
 	private VBox canvasVBox;
     /**
@@ -397,34 +383,23 @@ public class GUIController {
 		
 		infoButton.setPrefWidth(backButton.getBoundsInParent().getWidth());
 	}
-	@FXML
-	void drawPreviousTriangle() {
-		oldTriangle = new Triangle(triangle);
-		triangle = triangleStates.getPreviousTriangle(triangle);
-		drawAllTriangleComponents(mainCanvas);
-		
-		if(oldTriangle.isDifferent(triangle))
-		updateHighlightedPanel(highlightedPanelIndex-1);	
-	}
 	
 	@FXML
-	void drawNextTriangle() {
+	void drawAdjacentTriangle(ActionEvent trigger) {
 		oldTriangle = new Triangle(triangle);
-		triangle = triangleStates.getNextTriangle(triangle);
-		drawAllTriangleComponents(mainCanvas);
-		
-		if(oldTriangle.isDifferent(triangle))
-		updateHighlightedPanel(highlightedPanelIndex+1);	
-	}
-	
-	void drawSelectedTriangle(Canvas canvas) {
-		triangle = triangleStates.getTriangle(highlightedPanelIndex);
-		drawAllTriangleComponents(mainCanvas);
+		if(trigger.getSource() == nextButton) {
+			triangle = triangleStates.getNextTriangle(triangle);
+			if(oldTriangle.isDifferent(triangle)) updateHighlightedPanel(highlightedPanelIndex+1);	
+		} else {
+			triangle = triangleStates.getPreviousTriangle(triangle);
+			if(oldTriangle.isDifferent(triangle)) updateHighlightedPanel(highlightedPanelIndex-1);	
+		}
 	}
 	
 	void selectAndDrawPanel(Canvas canvasClicked) {
 		updateHighlightedPanel(canvasClicked);
-		drawSelectedTriangle(canvasClicked);
+		triangle = triangleStates.getTriangle(highlightedPanelIndex);
+		drawAllTriangleComponents(mainCanvas);
 	}
 	
 	@FXML
@@ -433,6 +408,7 @@ public class GUIController {
 		canvasVBox.getChildren().add(canvas);
 		triangle.prepareForCanvas(canvas);
 		canvas.setOnMousePressed(touchEvent -> selectAndDrawPanel(canvas));
+		
 		drawTriangle(canvas);
 		setTriangleLabels(canvas, false);
 		updateHighlightedPanel(canvas);

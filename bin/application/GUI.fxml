@@ -128,8 +128,8 @@
                      <right>
                         <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="150" BorderPane.alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" onAction="#drawPreviousTriangle" text="Previous" />
-                              <Button mnemonicParsing="false" onAction="#drawNextTriangle" text="Next" />
+                              <Button fx:id="previousButton" mnemonicParsing="false" onAction="#drawAdjacentTriangle" text="Previous" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#drawAdjacentTriangle" text="Next" />
                            </children>
                            <opaqueInsets>
                               <Insets />

@@ -9,7 +9,7 @@ public class Triangle extends TriangleCatalog{
 	private double h, o, a, t;
 	private boolean degreeMode;
 	private String errorDescription = "";
-	private Point ho, ha, oa;
+	private Point ho, ha, oa, center;
 	private HashMap<String, String> info = new HashMap<String, String>();
 	
 	/**Triangle Constructor. Runs the necessary methods to prepare the triangle and
@@ -170,6 +170,8 @@ public class Triangle extends TriangleCatalog{
 		//moving each of the triangle's points to let us display triangles with points of 
 		//negative coordinates on the main quadrant of the canvas (the canvas only shows +,+)
 		moveToPositiveQuadrant();
+		
+		centerPointsOnCanvas(canvasToDrawOn);
     }
     
 	/**
@@ -239,6 +241,7 @@ public class Triangle extends TriangleCatalog{
 		ho = new Point(a/2,-o/2);
 		ha = new Point(-a/2,o/2);
 		oa = new Point(a/2,o/2);
+		center = new Point(oa.getX()/2, oa.getY()/2);
 	}
 
 	
@@ -248,8 +251,8 @@ public class Triangle extends TriangleCatalog{
 	 */
 	void scaleSize(Canvas canvasToDrawOn){
 		//maximum size that triangle should take up in x and y dimensions
-		double maxW = canvasToDrawOn.getWidth()*0.9;
-		double maxH = canvasToDrawOn.getHeight()*0.9;
+		double maxW = canvasToDrawOn.getWidth()*0.8;
+		double maxH = canvasToDrawOn.getHeight()*0.8;
 		double scale = 1;
 		
 		//scale triangle size to use the entire canvas without distorting x:y ratio
@@ -281,6 +284,23 @@ public class Triangle extends TriangleCatalog{
 		if(oa.getY() < 0) translatePoints(0, Math.abs(oa.getY()));
 	}
 	
+	void centerPointsOnCanvas(Canvas canvasToDrawOn) {
+		Point smallestX = null;
+		Point largestX = null;
+		Point smallestY = null;
+		Point largestY = null;
+		Point[] trianglePoints = {ho, ha, oa};
+		
+		for(Point point : trianglePoints) {
+			if(smallestX == null || point.getX() < smallestX.getX()) smallestX = point;
+			if(largestX == null || point.getX() > largestX.getX()) largestX = point;
+			if(smallestY == null || point.getY() < smallestY.getY()) smallestY = point;
+			if(largestY == null || point.getY() > largestY.getY()) largestY = point;
+		}
+		
+		translatePoints((canvasToDrawOn.getWidth()-largestX.getX()) / 2, 
+				(canvasToDrawOn.getHeight()-largestY.getY()) / 2);
+	}
 	
 	/**
 	 * Moves all points of the triangle right by x, down by y.

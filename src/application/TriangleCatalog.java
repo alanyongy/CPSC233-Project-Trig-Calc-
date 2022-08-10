@@ -2,6 +2,7 @@ package application;
 
 import java.util.ArrayList;
 
+
 public class TriangleCatalog {
 	private ArrayList<Triangle> triangleList;
 	

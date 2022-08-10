@@ -3,11 +3,9 @@ package application;
 import javafx.scene.canvas.Canvas;
 
 //child class of Triangle, used to override methods such that unknown 
-//side lengths/angle are solved for in terms of the given variables,
-//outputting algebraic formulas instead of concrete values.
+//side lengths/angle are solved for in terms of the given values treated 
+//as variables, outputting algebraic formulas instead of concrete values.
 public class FormulaTriangle extends Triangle {
-	static String hInfo = "", oInfo = "", aInfo = "", tInfo = "";
-	
 	
 	/**FormulaTriangle Constructor. All values are passed to the parent class Triangle,
 	 * as any differences in the process between the two triangle types are handled
@@ -44,29 +42,29 @@ public class FormulaTriangle extends Triangle {
 		//if side length/angle values aren't equal to 0, they have a value given by the user,
 		//and therefore should be used to calculate the values of the rest of the triangle.
 		if(h!=0 && o!=0) {
-			tInfo = "aSin(" + oInput + " / " + hInput + ")";
+			setInfo("t", "aSin(" + oInput + " / " + hInput + ")");
 			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
-			aInfo = "sqrt(" + hInput + "² - " + oInput + "²)";
+			setInfo("a", "sqrt(" + hInput + "² - " + oInput + "²)");
 		} else if(h!=0 && a!=0) {
-			tInfo = "aCos(" + aInput + " / " + hInput + ")";
+			setInfo("t", "aCos(" + aInput + " / " + hInput + ")");
 			solveMethod += "θ = aCos(a/h) \nRearranged from: cosθ = a/h";
-			oInfo = "sqrt(" + hInput + "² - " + aInput + "²)";
+			setInfo("o", "sqrt(" + hInput + "² - " + aInput + "²)");
 		} else if(h!=0 && t!=0) {
-			oInfo = hInput + " * sin(" + tInput + ")";
-			aInfo = hInput + " * cos(" + tInput + ")";
+			setInfo("o", hInput + " * sin(" + tInput + ")");
+			setInfo("a", hInput + " * cos(" + tInput + ")");
 			solveMethod += "o = h*sin(θ) \nRearranged from: sinθ = o/h \n\nTrig. Formula Used: a = h*cos(θ) \nRearranged from: cosθ = a/h";
 		} else if(o!=0 && a!=0) {
-			tInfo = "aTan(" + oInput + " / " + aInput + ")";
+			setInfo("t", "aTan(" + oInput + " / " + aInput + ")");
 			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
+			setInfo("h", "sqrt(" + aInput + "² + " + oInput + "²)");
 		} else if(o!=0 && t!=0) {
-			aInfo = oInput + " / tan(" + tInput + ")";
+			setInfo("a", oInput + " / tan(" + tInput + ")");
 			solveMethod += "a = o/tan(θ) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
+			setInfo("h", "sqrt(" + aInput + "² + " + oInput + "²)");
 		} else if(a!=0 && t!=0) {
-			oInfo = aInput + " * tan(" + tInput + ")";
+			setInfo("o", aInput + " * tan(" + tInput + ")");
 			solveMethod += "o = a*tan(θ) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
+			setInfo("h", "sqrt(" + aInput + "² + " + oInput + "²)");
 		}
 		
 		//setting the triangle's actual sidelengths to a default of 1,1 for the
@@ -101,10 +99,6 @@ public class FormulaTriangle extends Triangle {
 	 */
 	@Override
 	void storeInfo(){
-		if(!hInfo.isEmpty()) setInfo("h", hInfo);
-		if(!oInfo.isEmpty()) setInfo("o", oInfo);
-		if(!aInfo.isEmpty()) setInfo("a", aInfo);
-		if(!tInfo.isEmpty()) setInfo("t", tInfo);
 		if(!getInfo("HypotenuseInput").isEmpty()) setInfo("h", getInfo("HypotenuseInput"));
 		if(!getInfo("OppositeInput").isEmpty()) setInfo("o", getInfo("OppositeInput"));
 		if(!getInfo("AdjacentInput").isEmpty()) setInfo("a", getInfo("AdjacentInput"));
