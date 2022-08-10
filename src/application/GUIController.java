@@ -1,13 +1,17 @@
 package application;
 
+import java.io.FileInputStream;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -18,17 +22,20 @@ import javafx.stage.Stage;
 public class GUIController {
 	Stage applicationStage;
 	Scene mainScene;
+	TriangleCatalog triangleStates = new TriangleCatalog();
 	boolean mainSceneSet = false;
+	int highlightedPanelIndex = 0;
     Triangle triangle;
+    Triangle oldTriangle;
 	
     @FXML
-    private TextField hTf;
+    private TextField hypotenuseTextField;
     @FXML
-    private TextField aTf;
+    private TextField adjacentTextField;
     @FXML
-    private TextField oTf;
+    private TextField oppositeTextField;
     @FXML
-    private TextField tTf;
+    private TextField angleThetaTextField;
     @FXML
     private ToggleButton degreesToggleButton;
     @FXML
@@ -38,67 +45,94 @@ public class GUIController {
     @FXML
     private ToggleButton formulaToggleButton;
     @FXML
-    private Canvas canvas = new Canvas();
+    private Canvas mainCanvas = new Canvas();
     @FXML
-    private Text infoText;
+    private Text infoAreaText;
     @FXML
     private Label errorLabel; 
     @FXML
     private Label instructionLabel;
     @FXML
     private Button informationButton;
-	
+	@FXML
+	private VBox canvasVBox;
     /**
-     * Navigates through the necessary processes
+     * Navigates through the necessary processes to display the result to the user. This
+     * includes passing the user inputs to the triangle class, setting error labels, and
+     * calling the drawing and labelling functions as needed.
      */
     @FXML
     void calculate() {
-    	//clearing the error label as triangle calculations are independent of each other
     	errorLabel.setText("");
     	
     	if(checkTwoTotalInputs()) {
+    		if(triangle != null) oldTriangle = new Triangle(triangle);
+    		else oldTriangle = triangle;
+
         	//creating a new triangle or FormulaTriangle object, giving it the contents of the GUI.
-        	//triangle is for calculating based off numeric values, whereas FormulaTriangle is 
-        	//a child of Triangle which overrides certain methods in order to handle string entries
+        	//Triangle calculates based off numeric values, whereas FormulaTriangle is a child 
+    		//of Triangle which overrides certain methods in order to handle string entries
     		//to calculate for an algebraic formula which incorporates the user's inputs instead.
-        	boolean degrees = degreesToggleButton.isSelected() ? true : false;
-        	if(formulaToggleButton.isSelected()) 
-        		triangle = new FormulaTriangle(hTf.getText(),oTf.getText(),aTf.getText(),tTf.getText(), degrees);
-        	else triangle = new Triangle(hTf.getText(),oTf.getText(),aTf.getText(),tTf.getText(), degrees);
-        	
-        	//setting the errorLabel to notify user of any potential 
+        	boolean angleModeDegrees = degreesToggleButton.isSelected() ? true : false;
+        	if(formulaToggleButton.isSelected()) {
+        		triangle = new FormulaTriangle(hypotenuseTextField.getText(),oppositeTextField.getText(),
+        										adjacentTextField.getText(),angleThetaTextField.getText(), 
+        										angleModeDegrees, mainCanvas);
+        	} else {
+        		triangle = new Triangle(hypotenuseTextField.getText(),oppositeTextField.getText(),
+        								adjacentTextField.getText(),angleThetaTextField.getText(), 
+        								angleModeDegrees, mainCanvas);
+        	}
+        	//setting the errorLabel to notify user of any potential errors regarding inputs
         	errorLabel.setText(triangle.getErrorDescription());
         	
-    		//validating that the triangle no longer has any sidelengths/angle at a value of 0
-    		if(triangle.validateTriangle()) {
-    			//creating the necessary component for drawing on the canvas
-        		GraphicsContext gc = canvas.getGraphicsContext2D();
-        		
-        		//drawing the outline of the triangle
-            	drawTriangle(gc);
-            	
-            	//moving and setting labels according to the values of the triangle
-            	setTriangleLabels(gc);
-            	
-            	//putting the solve method in the text area of the GUI.
-            	setInfoText();
-    		} else {
-        		if(errorLabel.getText().isEmpty()) 
-            		//if the triangle has 0 for h/o/a values, no errorlabel message change is needed as the
-        			//validateInput() method would already have set an errorlabel message, and should not be 
-        			//overwritten. Therefore there is only an errorlabel message for the isNaN case of validateTriangle().
-        			errorLabel.setText("Opp. and Adj. can't be larger than or equal to Hyp.");
-    		}
+    		//checking that the triangle no longer has any sidelengths/angle at a value of 0
+        	if(oldTriangle == null || oldTriangle.isDifferent(triangle)) {
+        		if(triangle.isValidTriangle()) {
+        			//calls the methods to draw the triangle, it's labels, and the information associated with the triangle
+        			drawAllTriangleComponents(mainCanvas);
+        			triangleStates.addTriangle(oldTriangle, triangle);
+        			addCanvasPanel();
+        		} else {
+            		if(errorLabel.getText().isEmpty()) 
+                		//if the triangle has 0 for h/o/a values, no errorlabel message change is needed as the
+            			//validateInput() method would already have set an errorlabel message, and should not be 
+            			//overwritten. Therefore there is only an errorlabel message for the isNaN case of validateTriangle().
+            			errorLabel.setText("Opp. and Adj. can't be larger than or equal to Hyp.");
+        		}
+        	}
     	}
     }
    
+    
+    public void drawAllTriangleComponents(Canvas canvasToDrawOn) {
+    	triangle.prepareForCanvas(canvasToDrawOn);
+    	
+		//drawing the outline of the triangle
+    	drawTriangle(canvasToDrawOn);
+    	
+    	//moving and setting labels according to the values of the triangle
+    	setTriangleLabels(canvasToDrawOn, true);
+    	
+    	//putting the solve method in the text area of the GUI.
+    	setInfoText();
+    }
+    
+    
 	/**
 	 * Draws the triangle by stroking between triangle points.
 	 * @param graphics - GraphicsContext object to draw with
 	 */
-	public void drawTriangle(GraphicsContext graphics) {
+	public void drawTriangle(Canvas canvasToDrawOn) {
+		GraphicsContext graphics = canvasToDrawOn.getGraphicsContext2D();
+		
 		//clears the canvas so that the previously drawn triangle (if applicable) is cleared.
-		graphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		graphics.setFill(Color.BLACK);
+		graphics.clearRect(0, 0, canvasToDrawOn.getWidth(), canvasToDrawOn.getHeight());
+		graphics.fillRect(0, 0, canvasToDrawOn.getWidth(), canvasToDrawOn.getHeight());
+		graphics.setFill(Color.WHITE);
+		graphics.fillRect(1, 1, canvasToDrawOn.getWidth()-2, canvasToDrawOn.getHeight()-2);
+		graphics.setFill(Color.BLACK);
 		
 		//setting triangle values to formulas to clean up further calculations
 		double haX = triangle.getHa().getX();
@@ -119,37 +153,47 @@ public class GUIController {
 	 * respective side-length/angle positions and values.
 	 * @param graphics - GraphicsContext object to draw with
 	 */
-	public void setTriangleLabels(GraphicsContext graphics) {
-		//setting minimum bounds for labels (so they are fully visible)
-		int xBound = 335;
-		int yBound = 10;
+	public void setTriangleLabels(Canvas canvasToDrawOn, boolean calculatePositions) {
+		GraphicsContext graphics = canvasToDrawOn.getGraphicsContext2D();
 		
-		//setting values for overlap detection between labels
-		int overlapMinX = 100;
-		int overlapMinY = 15;
-		
-		//creating a new point for each label to be drawn at
-		Point h = calculateMidpoint(triangle.getHa(), triangle.getHo(), xBound, yBound);
-		Point o = calculateMidpoint(triangle.getHo(), triangle.getOa(), xBound, yBound);
-		Point a = calculateMidpoint(triangle.getHa(), triangle.getOa(), xBound, yBound);
-		Point t = calculateMidpoint(triangle.getHa(), triangle.getHa(), xBound, yBound);
-		
-		//move the newly created points such that they do not overlap to keep labels readable
-		moveOverlappingPoints(h, o, a, t, overlapMinX, overlapMinY);
-		
-		//writes the label information at their respective locations
-		graphics.setFill(Color.RED);
-		graphics.fillText("H: " + triangle.getInfo("h"), h.getX(), h.getY());
-		graphics.fillText("O: " + triangle.getInfo("o"), o.getX(), o.getY());
-		graphics.fillText("A: " + triangle.getInfo("a"), a.getX(), a.getY());
-		graphics.fillText("θ: " + triangle.getInfo("t"), t.getX(), t.getY());
+		if(calculatePositions) {
+			//setting minimum bounds for labels (so they are fully visible)
+			int xBound = 335;
+			int yBound = 10;
+			
+			//setting values for overlap detection between labels
+			int overlapMinX = 100;
+			int overlapMinY = 15;
+			
+			//creating a new point for each label to be drawn at
+			Point h = calculateMidpoint(triangle.getHa(), triangle.getHo(), xBound, yBound);
+			Point o = calculateMidpoint(triangle.getHo(), triangle.getOa(), xBound, yBound);
+			Point a = calculateMidpoint(triangle.getHa(), triangle.getOa(), xBound, yBound);
+			Point t = calculateMidpoint(triangle.getHa(), triangle.getHa(), xBound, yBound);
+			
+			//move the newly created points such that they do not overlap to keep labels readable
+			moveOverlappingPoints(h, o, a, t, overlapMinX, overlapMinY);
+			
+			//writes the label information at their respective locations
+			graphics.setFill(Color.RED);
+			graphics.fillText("H: " + triangle.getInfo("h"), h.getX(), h.getY());
+			graphics.fillText("O: " + triangle.getInfo("o"), o.getX(), o.getY());
+			graphics.fillText("A: " + triangle.getInfo("a"), a.getX(), a.getY());
+			graphics.fillText("θ: " + triangle.getInfo("t"), t.getX(), t.getY());
+		} else {
+			graphics.setFill(Color.RED);
+			graphics.fillText("H: " + triangle.getInfo("h"), 0, 10);
+			graphics.fillText("O: " + triangle.getInfo("o"), 0, 20);
+			graphics.fillText("A: " + triangle.getInfo("a"), 0, 30);
+			graphics.fillText("θ: " + triangle.getInfo("t"), 0, 40);
+		}
 	}
 	
 	/**
 	 * puts the solve method information for the triangle in the infoText area of the GUI.
 	 */
 	public void setInfoText() {
-    	infoText.setText("Hyponetuse: " + triangle.getInfo("h") + 
+    	infoAreaText.setText("Hypotenuse: " + triangle.getInfo("h") + 
     			"\nOpposite: " + triangle.getInfo("o") + 
     			"\nAdjacent: " + triangle.getInfo("a") + 
     			"\nAngle θ: " + triangle.getInfo("t")  + 
@@ -201,10 +245,10 @@ public class GUIController {
     	int totalInputs = 0;
     	
     	//checks each text field and increments the counter for each text field that isn't empty
-    	if (hTf.getText().isEmpty()) totalInputs++;
-    	if (oTf.getText().isEmpty()) totalInputs++;
-    	if (aTf.getText().isEmpty()) totalInputs++;
-    	if (tTf.getText().isEmpty()) totalInputs++;
+    	if (hypotenuseTextField.getText().isEmpty()) totalInputs++;
+    	if (oppositeTextField.getText().isEmpty()) totalInputs++;
+    	if (adjacentTextField.getText().isEmpty()) totalInputs++;
+    	if (angleThetaTextField.getText().isEmpty()) totalInputs++;
     	if (totalInputs != 2) {
     		errorLabel.setText("Only enter values for two components.");
     		return false;
@@ -352,6 +396,68 @@ public class GUIController {
 		applicationStage.setScene(new Scene(mainBox, mainScene.getWidth(), mainScene.getHeight()));
 		
 		infoButton.setPrefWidth(backButton.getBoundsInParent().getWidth());
+	}
+	@FXML
+	void drawPreviousTriangle() {
+		oldTriangle = new Triangle(triangle);
+		triangle = triangleStates.getPreviousTriangle(triangle);
+		drawAllTriangleComponents(mainCanvas);
+		
+		if(oldTriangle.isDifferent(triangle))
+		updateHighlightedPanel(highlightedPanelIndex-1);	
+	}
+	
+	@FXML
+	void drawNextTriangle() {
+		oldTriangle = new Triangle(triangle);
+		triangle = triangleStates.getNextTriangle(triangle);
+		drawAllTriangleComponents(mainCanvas);
+		
+		if(oldTriangle.isDifferent(triangle))
+		updateHighlightedPanel(highlightedPanelIndex+1);	
+	}
+	
+	void drawSelectedTriangle(Canvas canvas) {
+		triangle = triangleStates.getTriangle(highlightedPanelIndex);
+		drawAllTriangleComponents(mainCanvas);
+	}
+	
+	void selectAndDrawPanel(Canvas canvasClicked) {
+		updateHighlightedPanel(canvasClicked);
+		drawSelectedTriangle(canvasClicked);
+	}
+	
+	@FXML
+	void addCanvasPanel() {
+		Canvas canvas = new Canvas(80,80);
+		canvasVBox.getChildren().add(canvas);
+		triangle.prepareForCanvas(canvas);
+		canvas.setOnMousePressed(touchEvent -> selectAndDrawPanel(canvas));
+		drawTriangle(canvas);
+		setTriangleLabels(canvas, false);
+		updateHighlightedPanel(canvas);
+	}
+	
+	void updateHighlightedPanel(Canvas canvasToHighlight) {
+		for(int i = 0; i < canvasVBox.getChildren().size(); i++) {
+			if(canvasVBox.getChildren().get(i) != canvasToHighlight) {
+				canvasVBox.getChildren().get(i).setOpacity(0.5);
+			} else {
+				canvasVBox.getChildren().get(i).setOpacity(1);
+				highlightedPanelIndex = i;
+			}
+		}
+	}
+	
+	void updateHighlightedPanel(int canvasIndexToHighlight) {
+		for(int i = 0; i < canvasVBox.getChildren().size(); i++) {
+			if(canvasVBox.getChildren().get(i) != canvasVBox.getChildren().get(canvasIndexToHighlight)) {
+				canvasVBox.getChildren().get(i).setOpacity(0.5);
+			} else {
+				canvasVBox.getChildren().get(i).setOpacity(1);
+				highlightedPanelIndex = i;
+			}
+		}
 	}
 }
 

@@ -1,5 +1,7 @@
 package application;
 
+import javafx.scene.canvas.Canvas;
+
 //child class of Triangle, used to override methods such that unknown 
 //side lengths/angle are solved for in terms of the given variables,
 //outputting algebraic formulas instead of concrete values.
@@ -14,10 +16,10 @@ public class FormulaTriangle extends Triangle {
 	 * @param inputO - value entered for opposite side length
 	 * @param inputA - value entered for adjacent side length
 	 * @param inputT - value entered for angle theta
-	 * @param degrees - degree mode - true for degrees, false for radians
+	 * @param angleModeDegrees - degree mode - true for degrees, false for radians
 	 */
-	FormulaTriangle(String inputH, String inputO, String inputA, String inputT, boolean degrees){
-		super(inputH, inputO, inputA, inputT, degrees);
+	FormulaTriangle(String inputH, String inputO, String inputA, String inputT, boolean angleModeDegrees, Canvas canvasToDrawOn){
+		super(inputH, inputO, inputA, inputT, angleModeDegrees, canvasToDrawOn);
 	}
 	
 	/**
@@ -44,11 +46,11 @@ public class FormulaTriangle extends Triangle {
 		if(h!=0 && o!=0) {
 			tInfo = "aSin(" + oInput + " / " + hInput + ")";
 			solveMethod += "θ = aSin(o/h) \nRearranged from: sinθ = o/h";
-			aInfo = "sqrt(" + hInput + "^2 - " + oInput + "^2)";
+			aInfo = "sqrt(" + hInput + "² - " + oInput + "²)";
 		} else if(h!=0 && a!=0) {
 			tInfo = "aCos(" + aInput + " / " + hInput + ")";
 			solveMethod += "θ = aCos(a/h) \nRearranged from: cosθ = a/h";
-			oInfo = "sqrt(" + hInput + "^2 - " + aInput + "^2)";
+			oInfo = "sqrt(" + hInput + "² - " + aInput + "²)";
 		} else if(h!=0 && t!=0) {
 			oInfo = hInput + " * sin(" + tInput + ")";
 			aInfo = hInput + " * cos(" + tInput + ")";
@@ -56,15 +58,15 @@ public class FormulaTriangle extends Triangle {
 		} else if(o!=0 && a!=0) {
 			tInfo = "aTan(" + oInput + " / " + aInput + ")";
 			solveMethod += "θ = aTan(o/a) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
+			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
 		} else if(o!=0 && t!=0) {
 			aInfo = oInput + " / tan(" + tInput + ")";
 			solveMethod += "a = o/tan(θ) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
+			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
 		} else if(a!=0 && t!=0) {
 			oInfo = aInput + " * tan(" + tInput + ")";
 			solveMethod += "o = a*tan(θ) \nRearranged from: tanθ = o/a";
-			hInfo = "sqrt(" + aInput + "^2 + " + oInput + "^2)";
+			hInfo = "sqrt(" + aInput + "² + " + oInput + "²)";
 		}
 		
 		//setting the triangle's actual sidelengths to a default of 1,1 for the
@@ -98,7 +100,7 @@ public class FormulaTriangle extends Triangle {
 	 * These are the final values that will be assigned to the labels and displayed to the user.
 	 */
 	@Override
-	void storeTriangleInfo(){
+	void storeInfo(){
 		if(!hInfo.isEmpty()) setInfo("h", hInfo);
 		if(!oInfo.isEmpty()) setInfo("o", oInfo);
 		if(!aInfo.isEmpty()) setInfo("a", aInfo);

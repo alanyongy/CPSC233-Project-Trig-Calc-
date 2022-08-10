@@ -3,13 +3,14 @@ package application;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
-public class Triangle {
+import javafx.scene.canvas.Canvas;
+
+public class Triangle extends TriangleCatalog{
 	private double h, o, a, t;
 	private boolean degreeMode;
 	private String errorDescription = "";
 	private Point ho, ha, oa;
 	private HashMap<String, String> info = new HashMap<String, String>();
-
 	
 	/**Triangle Constructor. Runs the necessary methods to prepare the triangle and
 	 * associated values for display on the GUI. This includes calculating the 
@@ -19,36 +20,41 @@ public class Triangle {
 	 * @param inputO - value entered for opposite side length
 	 * @param inputA - value entered for adjacent side length
 	 * @param inputT - value entered for angle theta
-	 * @param degrees - degree mode - true for degrees, false for radians
+	 * @param angleModeDegrees - degree mode - true for degrees, false for radians
 	 */
-	Triangle(String inputH, String inputO, String inputA, String inputT, boolean degrees){
+	Triangle(String inputH, String inputO, String inputA, String inputT, boolean angleModeDegrees, Canvas canvasToDrawOn){
 		//Validating the various user inputs before starting calculations
 		//to prevent potential wrongtype or math errors later on
-    	Double validatedH = validateInput("Hypotenuse", inputH, degrees);
-    	Double validatedO = validateInput("Opposite", inputO, degrees);
-    	Double validatedA = validateInput("Adjacent", inputA, degrees);
-    	Double validatedT = validateInput("Angle θ", inputT, degrees);
+    	Double validatedH = validateInput("Hypotenuse", inputH, angleModeDegrees);
+    	Double validatedO = validateInput("Opposite", inputO, angleModeDegrees);
+    	Double validatedA = validateInput("Adjacent", inputA, angleModeDegrees);
+    	Double validatedT = validateInput("Angle θ", inputT, angleModeDegrees);
     	
 		//computing for the missing values of the triangle using validated user inputs
-		calculateMissingValues(validatedH,validatedO,validatedA,validatedT, degrees); 
+		calculateMissingValues(validatedH,validatedO,validatedA,validatedT, angleModeDegrees); 
 		
 		//setting the current triangle sidelength/angle information to string values in the
 		//triangle before they are manipulated by further methods for display purposes
 		//This method is overridden in the FormulaTriangle class in order to store 
 		//algebraic formulas instead of calculated values for the sidelengths/angles.
-		storeTriangleInfo();
+		storeInfo();
 		
-		//scaling the triangle to a suitable size for the canvas
-		scaleTriangle();
-		
-		//calculating the coordinates of each of the (scaled) triangle's three corners.
-		calculatePointCoordinates();
-		
-		//moving each of the triangle's points to let us display triangles with points of 
-		//negative coordinates on the main quadrant of the canvas (the canvas only shows +,+)
-		moveToPositiveQuadrant();
+		prepareForCanvas(canvasToDrawOn);
 	}
 	
+	Triangle(Triangle triangleToCopy){
+		h = triangleToCopy.getH();
+		o = triangleToCopy.getO();
+		a = triangleToCopy.getA();
+		t = triangleToCopy.getT();
+		degreeMode = triangleToCopy.getDegreeMode();
+		errorDescription = triangleToCopy.getErrorDescription();
+		ho = triangleToCopy.getHo();
+		ha = triangleToCopy.getHa();
+		oa = triangleToCopy.getOa();
+		info = new HashMap<String, String>(triangleToCopy.getInfo());
+	}
+
 	/**
 	 * Solves for the missing values of the triangle using trigonometry. The solved 
 	 * values are assigned to the triangle object's instance variables, and the 
@@ -154,13 +160,24 @@ public class Triangle {
     	return errorDescription;
     }
     
+    void prepareForCanvas(Canvas canvasToDrawOn) {
+		//scaling the triangle to a suitable size for the canvas
+		scaleSize(canvasToDrawOn);
+		
+		//calculating the coordinates of each of the (scaled) triangle's three corners.
+		calculatePointCoordinates();
+		
+		//moving each of the triangle's points to let us display triangles with points of 
+		//negative coordinates on the main quadrant of the canvas (the canvas only shows +,+)
+		moveToPositiveQuadrant();
+    }
     
 	/**
 	 * Takes the triangle's current sidelength and angle values, formats them 
 	 * into strings with 2 decimal places, and stores them in the triangle's information hashmap.
 	 * These are the final values that will be assigned to the labels and displayed to the user.
 	 */
-	void storeTriangleInfo(){
+	void storeInfo(){
 		//creation of component to format doubles into 2 decimal places
 		DecimalFormat dec2 = new DecimalFormat("#0.00");
 		
@@ -218,10 +235,10 @@ public class Triangle {
 		 * canvas' orientation of heading top to bottom as the y value increases. The
 		 * values are divided by two since otherwise, the points would have two times
 		 * the opposite/adjacent sidelength distances away from each other due to
-		 * having a negative/positive difference between them. */		
-		this.ho = new Point(a/2,-o/2);
-		this.ha = new Point(-a/2,o/2);
-		this.oa = new Point(a/2,o/2);
+		 * having a negative and positive value difference between them. */		
+		ho = new Point(a/2,-o/2);
+		ha = new Point(-a/2,o/2);
+		oa = new Point(a/2,o/2);
 	}
 
 	
@@ -229,10 +246,10 @@ public class Triangle {
 	 *Scales up/down the size (point coordinates) of the triangle such that it's largest length 
 	 *(relative to canvas edge length) uses the entire canvas (maxW, maxH)
 	 */
-	void scaleTriangle(){
+	void scaleSize(Canvas canvasToDrawOn){
 		//maximum size that triangle should take up in x and y dimensions
-		double maxW = 360;
-		double maxH = 180;
+		double maxW = canvasToDrawOn.getWidth()*0.9;
+		double maxH = canvasToDrawOn.getHeight()*0.9;
 		double scale = 1;
 		
 		//scale triangle size to use the entire canvas without distorting x:y ratio
@@ -288,10 +305,19 @@ public class Triangle {
      * triangle, and similarly marks the triangle as invalid. Having non-empty error description also voids validity.
      * @return true if the triangle has valid side lengths/angle and no errors, otherwise false
      */
-    boolean validateTriangle() {
+    boolean isValidTriangle() {
     	//triangle.getH() will return NaN if it is unable to be calculated due to entering 
     	//impossible values for triangle side lengths (ie. opposite larger than hypotenuse)
     	if (Double.isNaN(getH()) || getH() == 0 || getO() == 0 || getA() == 0 || !errorDescription.isEmpty())
+    		return false;
+    	return true;
+    }
+    
+    boolean isDifferent(Triangle toCompare) {
+    	if(getInfo("h").equals(toCompare.getInfo("h"))
+    		&& getInfo("o").equals(toCompare.getInfo("o"))
+			&& getInfo("a").equals(toCompare.getInfo("a"))
+			&& getInfo("t").equals(toCompare.getInfo("t")))
     		return false;
     	return true;
     }
@@ -347,6 +373,13 @@ public class Triangle {
 	 */
 	public void setA(double a) {
 		this.a = a;
+	}
+	
+	/**
+	 * @return adjacent side length of triangle object
+	 */
+	public double getT() {
+		return t;
 	}
 
 	/**
@@ -404,6 +437,11 @@ public class Triangle {
 	public String getInfo(String key) {
 		String newStr = new String(info.get(key));
 		return newStr;
+	}
+	
+	public HashMap<String,String> getInfo() {
+		HashMap<String, String> newInfo = new HashMap<String, String>(info);
+		return newInfo;
 	}
 	
 	public void setInfo(String key, String value) {

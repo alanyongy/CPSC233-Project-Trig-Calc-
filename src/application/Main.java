@@ -6,8 +6,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
 
 
 public class Main extends Application {
@@ -15,10 +14,10 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			BorderPane root = loader.load(new FileInputStream("src/application/GUI.fxml" ));
+			ScrollPane root = loader.load(new FileInputStream("src/application/GUI.fxml" ));
 			GUIController controller = (GUIController) loader.getController();
 			controller.applicationStage = primaryStage;
-			Scene scene = new Scene(root,400,630); 
+			Scene scene = new Scene(root,520,630); 
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("Right Triangle Trigonometry Calculator");
 			primaryStage.setResizable(false);
