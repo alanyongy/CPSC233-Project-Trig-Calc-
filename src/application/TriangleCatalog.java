@@ -11,25 +11,24 @@ public class TriangleCatalog {
 	}
 	
 	Triangle getPreviousTriangle(Triangle currentTriangle){
-		int i = triangleList.indexOf(currentTriangle);
-		while (i > 0) {
-			if(triangleList.get(i-1) != null) return triangleList.get(triangleList.indexOf(currentTriangle)-1);
+		if (triangleList.indexOf(currentTriangle) > 0) {
+			return triangleList.get(triangleList.indexOf(currentTriangle)-1);
 		}
-		return triangleList.get(0);
+		return null;
 	}
 	
 	Triangle getNextTriangle(Triangle currentTriangle){
-		if(triangleList.indexOf(currentTriangle) != triangleList.size()-1)
+		if(triangleList.indexOf(currentTriangle) < triangleList.size()-1)
 			return triangleList.get(triangleList.indexOf(currentTriangle)+1);
-		return triangleList.get(triangleList.size()-1);
+		return null;
 	}
 	
-	void addTriangle(Triangle oldTriangleStates, Triangle triangleStatesToAdd){
-		triangleList.add(triangleStatesToAdd);
+	void addTriangle(Triangle triangleToAdd){
+		triangleList.add(triangleToAdd);
 	}
 	
-	void removeTriangle(Triangle triangleStatesToRemove) {
-		if(triangleList.contains(triangleStatesToRemove)) triangleList.remove(triangleStatesToRemove);
+	void removeTriangle(Triangle triangleToRemove) {
+		if(triangleList.contains(triangleToRemove)) triangleList.remove(triangleToRemove);
 	}
 	
 	Triangle getTriangle(int index) {
@@ -37,5 +36,18 @@ public class TriangleCatalog {
 			return triangleList.get(index);
 		}
 		return triangleList.get(0);
+	}
+	
+	int getIndexInList(Triangle triangle) {
+		if (triangleList.contains(triangle)) {
+			for(int i = 0; i < triangleList.size(); i++) {
+				if(triangleList.get(i) == triangle) return i;
+			}
+		}
+		return 0;
+	}
+	
+	int getListSize(){
+		return triangleList.size();
 	}
 }

@@ -328,7 +328,7 @@ public class Triangle extends TriangleCatalog{
     boolean isValidTriangle() {
     	//triangle.getH() will return NaN if it is unable to be calculated due to entering 
     	//impossible values for triangle side lengths (ie. opposite larger than hypotenuse)
-    	if (Double.isNaN(getH()) || getH() == 0 || getO() == 0 || getA() == 0 || !errorDescription.isEmpty())
+    	if (Double.isNaN(getH()) || getH() == 0 || getO() == 0 || getA() == 0)
     		return false;
     	return true;
     }
