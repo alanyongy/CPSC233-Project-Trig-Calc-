@@ -10,22 +10,36 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <ScrollPane hbarPolicy="NEVER" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GUIController">
    <content>
       <HBox>
          <children>
-            <ScrollPane hbarPolicy="NEVER" maxHeight="350.0" minHeight="350.0" vbarPolicy="ALWAYS">
-               <HBox.margin>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="250.0" />
-               </HBox.margin>
-               <content>
-                  <VBox fx:id="canvasPanelVBox" minHeight="1.0" prefWidth="80.0" spacing="2.0">
-                     <children>
-                     </children></VBox>
-               </content>
-            </ScrollPane>
+	         	<ScrollPane hbarPolicy="NEVER" maxHeight="350.0" minHeight="350.0" vbarPolicy="ALWAYS">
+	               <HBox.margin>
+	                  <Insets bottom="10.0" left="10.0" right="10.0" top="220.0" />
+	               </HBox.margin>
+	               <content>
+		               <VBox>
+		                  <Button mnemonicParsing="false" onAction="#addRandomTriangle" prefWidth="80" text="Add Random Triangle" textAlignment="CENTER" wrapText="true">
+	                           <HBox.margin>
+	                              <Insets left="10.0" />
+	                           </HBox.margin>
+	                      <font>
+	                        <Font size="9.0" />
+	                      </font>
+	                      </Button>
+                     <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#clearTriangleList" prefWidth="80" text="Delete All" textAlignment="CENTER" wrapText="true" />
+	                      <VBox fx:id="canvasPanelVBox" minHeight="1.0" prefWidth="80.0" spacing="2.0">
+		                     <children>
+		                     </children>
+		                  </VBox>
+		               </VBox>
+	               </content>
+	               
+	            </ScrollPane>
             <VBox prefWidth="400.0">
                <children>
                   <HBox prefWidth="200.0">

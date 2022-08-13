@@ -1,5 +1,8 @@
 package application;
 
+import java.text.DecimalFormat;
+import java.util.Random;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -405,8 +408,8 @@ public class GUIController {
 		if(triangleStates.getListSize() != 0) {
 			if(trigger.getSource() == nextButton) {
 				if(highlightedPanelIndex < (canvasPanelVBox.getChildren().size()-1)) {
-					currentTriangle = triangleStates.getNextTriangle(oldTriangle);
-					updateHighlightedPanel(highlightedPanelIndex+1);	
+					currentTriangle = triangleStates.getNextTriangle(currentTriangle);
+					updateHighlightedPanel(highlightedPanelIndex+1);
 				}
 			} else {
 				if(highlightedPanelIndex > 0) {
@@ -415,12 +418,62 @@ public class GUIController {
 				}
 			}
 		}
+		drawAllTriangleComponents(mainCanvas);
 	}
 	
 	void selectAndDrawPanel(StackPane panelClicked) {
 		updateHighlightedPanel(panelClicked);
 		currentTriangle = triangleStates.getTriangle(highlightedPanelIndex);
 		drawAllTriangleComponents(mainCanvas);
+	}
+	
+	@FXML
+	void addRandomTriangle() {
+		hypotenuseTextField.setText("");
+		oppositeTextField.setText("");
+		adjacentTextField.setText("");
+		angleThetaTextField.setText("");
+		
+		TextField pickedTextField = randomTextField();
+		TextField pickedTextField2 = pickedTextField;
+
+		while(pickedTextField2 == pickedTextField) {
+			pickedTextField2 = randomTextField();
+		}
+		
+		randomizeTextField(pickedTextField);
+		randomizeTextField(pickedTextField2);
+		calculate();
+	}
+	
+	@FXML
+	void clearTriangleList() {
+		while(triangleStates.getListSize() > 0) {
+			removeTriangle(triangleStates.getTriangle(0), (StackPane) canvasPanelVBox.getChildren().get(0));
+		}
+	}
+	
+	void randomizeTextField(TextField textFieldToSet){
+		DecimalFormat dec2 = new DecimalFormat("#0.00");
+		Random rand = new Random();
+		
+		if(textFieldToSet == oppositeTextField || textFieldToSet == adjacentTextField) {
+			textFieldToSet.setText("" + dec2.format((rand.nextDouble()-0.5)*20));
+		} else {
+			textFieldToSet.setText("" + dec2.format(rand.nextDouble()*89.9));
+		}
+	}
+	
+	TextField randomTextField() {
+		Random rand = new Random();
+		int intPicked = rand.nextInt(3);
+		
+		if (intPicked == 0) {
+			return oppositeTextField;
+		} else if (intPicked == 1) {
+			return adjacentTextField;
+		}
+		return angleThetaTextField;
 	}
 	
 	void addCanvasPanel(Triangle triangleToAddToCanvasPanel) {
@@ -461,6 +514,10 @@ public class GUIController {
 			currentTriangle = triangleStates.getTriangle(highlightedPanelIndex);
 			drawAllTriangleComponents(mainCanvas);
 		}
+		
+		if(triangleStates.getListSize() == 0) {
+			initialize();
+		}
 	}
 	
 	void updateHighlightedPanel(StackPane panelToHighlight) {
@@ -472,17 +529,72 @@ public class GUIController {
 				highlightedPanelIndex = i;
 			}
 		}
+		refreshTextFields();
 	}
 	
 	void updateHighlightedPanel(int canvasIndexToHighlight) {
 		for(int i = 0; i < canvasPanelVBox.getChildren().size(); i++) {
-			canvasPanelVBox.getChildren().get(i).setOpacity(0.5);
-			if(canvasPanelVBox.getChildren().size() > canvasIndexToHighlight 
-				&& canvasPanelVBox.getChildren().get(i) == canvasPanelVBox.getChildren().get(canvasIndexToHighlight)) {
+			if(canvasPanelVBox.getChildren().get(i) != canvasPanelVBox.getChildren().get(canvasIndexToHighlight)) {
+				canvasPanelVBox.getChildren().get(i).setOpacity(0.5);
+			} else {
 				canvasPanelVBox.getChildren().get(i).setOpacity(1);
 				highlightedPanelIndex = i;
 			}
+//			canvasPanelVBox.getChildren().get(i).setOpacity(0.5);
+//			if(canvasPanelVBox.getChildren().size() > canvasIndexToHighlight 
+//				&& canvasPanelVBox.getChildren().get(i) == canvasPanelVBox.getChildren().get(canvasIndexToHighlight)) {
+//				canvasPanelVBox.getChildren().get(i).setOpacity(1);
+//				highlightedPanelIndex = i;
+//			}
 		}
+		refreshTextFields();
+	}
+	
+	void refreshTextFields() {
+		if(triangleStates.getListSize() > 0) {
+			String hypotenuseInput = triangleStates.getTriangle(highlightedPanelIndex).getInfo("HypotenuseInput");
+			String oppositeInput = triangleStates.getTriangle(highlightedPanelIndex).getInfo("OppositeInput");
+			String adjacentInput = triangleStates.getTriangle(highlightedPanelIndex).getInfo("AdjacentInput");
+			String angleThetaInput = triangleStates.getTriangle(highlightedPanelIndex).getInfo("Angle θInput");
+
+			if(hypotenuseInput != null) hypotenuseTextField.setText(hypotenuseInput);
+			else hypotenuseTextField.setText("");
+			
+			if(oppositeInput != null) oppositeTextField.setText(oppositeInput);
+			else oppositeTextField.setText("");
+			
+			if(adjacentInput != null) adjacentTextField.setText(adjacentInput);
+			else adjacentTextField.setText("");
+			
+			if(angleThetaInput != null) angleThetaTextField.setText(angleThetaInput);
+			else angleThetaTextField.setText("");
+		} else {
+			hypotenuseTextField.setText("");
+			oppositeTextField.setText("");
+			adjacentTextField.setText("");
+			angleThetaTextField.setText("");
+		}
+	}
+	
+	@FXML
+	void initialize() {
+		GraphicsContext graphics = mainCanvas.getGraphicsContext2D();
+		graphics.setFill(Color.BLACK);
+		graphics.clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+		graphics.fillRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+		graphics.setFill(Color.WHITE);
+		graphics.fillRect(1, 1, mainCanvas.getWidth()-2, mainCanvas.getHeight()-2);
+		graphics.setFill(Color.BLACK);
+		
+		refreshTextFields();
+		
+		infoAreaText.setText("Pick two components of a right triangle"
+						+ "\n(side lengths, angle) and enter values "
+						+ "\nfor them to see detailed information"
+						+ "\nabout the triangle here. "
+						+ "\n\nClick the Information button at the top "
+						+ "\nright of the window to see all the"
+						+ "\navailable features of this program.");
 	}
 }
 
