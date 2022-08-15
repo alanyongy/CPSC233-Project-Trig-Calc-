@@ -51,7 +51,7 @@ public class TriangleCatalog {
 	 * Adds the specified triangle object to the end of the list.
 	 * @param triangleToAdd - triangle object to add to the list
 	 */
-	void addTriangle(Triangle triangleToAdd){
+	public void addTriangle(Triangle triangleToAdd){
 		triangleList.add(triangleToAdd);
 	}
 	
@@ -59,7 +59,7 @@ public class TriangleCatalog {
 	 * Removes the specified triangle object from the list if the list contains the triangle.
 	 * @param triangleToRemove - triangle object to remove from the list
 	 */
-	void removeTriangle(Triangle triangleToRemove) {
+	public void removeTriangle(Triangle triangleToRemove) {
 		//checking if the list contains the specified triangle
 		if(triangleList.contains(triangleToRemove)) {
 			triangleList.remove(triangleToRemove);
@@ -73,7 +73,7 @@ public class TriangleCatalog {
 	 * @return triangle object at the specified index of the list if available, otherwise 
 	 * the first triangle object in the list
 	 */
-	Triangle getTriangle(int index) {
+	public Triangle getTriangle(int index) {
 		//checking if the index is within the list
 		if(index < triangleList.size()) {
 			return triangleList.get(index);
@@ -87,7 +87,7 @@ public class TriangleCatalog {
 	 * @param triangle - triangle object to get the index of within the list
 	 * @return index of the specified triangle object in the list if available, otherwise 0
 	 */
-	int getIndexInList(Triangle triangle) {
+	public int getIndexInList(Triangle triangle) {
 		//checking if the list contains the specified triangle
 		if (triangleList.contains(triangle)) {
 			//counting up until the object at the index matches the specified triangle, then returns that index.
@@ -102,7 +102,7 @@ public class TriangleCatalog {
 	 * Returns the size of the list.
 	 * @return size of the triangleList within the TriangleCatalog object
 	 */
-	int getListSize(){
+	public int getListSize(){
 		return triangleList.size();
 	}
 }

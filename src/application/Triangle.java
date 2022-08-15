@@ -10,7 +10,7 @@ import javafx.scene.canvas.Canvas;
  * the sidelengths, angle, point objects representing the coordinates of the corners of the triangles,
  * and also storage of the various user inputs and settings associated with the creation of the triangle.
  */
-public class Triangle extends TriangleCatalog{
+public class Triangle {
 	private double hyp, opp, adj, ang;
 	private boolean angleModeDegrees;
 	private String errorDescription = "";
@@ -81,7 +81,7 @@ public class Triangle extends TriangleCatalog{
      * @return double value suitable for the triangle object; text parsed as a double or 
      * 1 (for triangles of FormulaTriangle class) if the text was valid, otherwise 0.
      */
-    double validateInput(String textField, String text, boolean degrees) {
+    private double validateInput(String textField, String text, boolean degrees) {
     	//storing the user input for future use
 		info.put(textField+"Input", text);
 		
@@ -124,7 +124,7 @@ public class Triangle extends TriangleCatalog{
 	 * @return String value describing the error causing the input to be invalid (empty string if no error) 
 	 * @implNote This method is overridden by the child class FormulaTriangle.
 	 */
-    String checkError(String textField, String text, boolean degreesMode) {
+    protected String checkError(String textField, String text, boolean degreesMode) {
     	//initializing variables that keep track of un-allowed or limited-quantity-allowed characters
     	int dotCount = 0;
     	int dashCount = 0;
@@ -172,7 +172,7 @@ public class Triangle extends TriangleCatalog{
 	 * @param angleModeDegrees - degree mode (degrees if true, radians if false) of value entered for theta
 	 * @implNote This method is overridden by the child class FormulaTriangle.
 	 */
-	void calculateMissingValues(double hyp, double opp, double adj, double ang, boolean angleModeDegrees) {
+	protected void calculateMissingValues(double hyp, double opp, double adj, double ang, boolean angleModeDegrees) {
 		String solveMethod = "";
 		
 		//determining whether it is necessary to change the angle given by the user to radians
@@ -232,7 +232,7 @@ public class Triangle extends TriangleCatalog{
      * Sets the error description of the triangle to an appropriate message if found.
      * @return true if the triangle has valid side lengths/angle and no errors, otherwise false
      */
-    boolean isValid() {
+    private boolean isValid() {
     	//triangle.getH() will return NaN if it is unable to be calculated due to entering 
     	//impossible values for triangle side lengths (ie. opposite larger than hypotenuse)
     	if (Double.isNaN(hyp) || Double.isNaN(opp) || Double.isNaN(adj) 
@@ -255,7 +255,7 @@ public class Triangle extends TriangleCatalog{
 	 * These are the final values that will be displayed to the user.
 	 * @implNote This method is overridden by the child class FormulaTriangle.
 	 */
-	void storeInfoInHashMap(){
+	protected void storeInfoInHashMap(){
 		//creation of component to format doubles into 2 decimal places
 		DecimalFormat dec2 = new DecimalFormat("#0.00");
 		
@@ -278,7 +278,7 @@ public class Triangle extends TriangleCatalog{
      * and centering the triangle on the canvas.
      * @param canvasToDrawOn
      */
-    void prepareForCanvas(Canvas canvasToDrawOn) {
+    public void prepareForCanvas(Canvas canvasToDrawOn) {
 		//scaling the triangle to a suitable size for the canvas
 		scaleSize(canvasToDrawOn);
 		
@@ -299,7 +299,7 @@ public class Triangle extends TriangleCatalog{
 	 * largest length (relative to canvas edge length) uses the entire canvas (maxW, maxH)
 	 * @param canvasToDrawOn - target canvas that triangle needs to fit on
 	 */
-	void scaleSize(Canvas canvasToDrawOn){
+	private void scaleSize(Canvas canvasToDrawOn){
 		//maximum size that triangle should take up in x and y dimensions
 		double maxW = canvasToDrawOn.getWidth()*0.8;
 		double maxH = canvasToDrawOn.getHeight()*0.8;
@@ -322,7 +322,7 @@ public class Triangle extends TriangleCatalog{
 	 * Uses the triangle's current adjacent and opposite side length values determine 
 	 * the coordinates and create point objects for each of the triangle's three corners.
 	 */
-	void calculatePointCoordinates() {
+	private void calculatePointCoordinates() {
 		/* opposite value for the hypotenuse is flipped to counter-act the java
 		 * canvas' orientation of heading top to bottom as the y value increases. The
 		 * values are divided by two since otherwise, the points would have two times
@@ -339,7 +339,7 @@ public class Triangle extends TriangleCatalog{
 	 *with those point's coordinates such that all points will be on the (+,+) plane on the 
 	 *canvas without distorting or reflecting the triangle over any axis.
 	 */
-	void movePointsToPositiveQuadrant() {
+	private void movePointsToPositiveQuadrant() {
 		//translating triangle across x/y axis as needed to keep all 
 		//triangle points on main quadrant (positive, positive)
 		if(pointHypOpp.getX() < 0) translatePoints(Math.abs(pointHypOpp.getX()), 0);
@@ -356,7 +356,7 @@ public class Triangle extends TriangleCatalog{
 	 * @param x - value of horizontal direction to move all points by
 	 * @param y - value of vertical direction to move all points by
 	 */
-	void translatePoints(double x, double y){
+	private void translatePoints(double x, double y){
 		//all points must be moved so that the triangle is never distorted 
 		//from it's original opposite:adjacent ratio.
 		pointHypOpp.setX(pointHypOpp.getX()+x);
@@ -373,7 +373,7 @@ public class Triangle extends TriangleCatalog{
 	 * but the collective location of the points are centered on the canvas.
 	 * @param canvasToDrawOn - target canvas that the triangle points need to be centered on
 	 */
-	void centerPointsOnCanvas(Canvas canvasToDrawOn) {
+	private void centerPointsOnCanvas(Canvas canvasToDrawOn) {
 		Point largestX = null;
 		Point largestY = null;
 		
@@ -401,7 +401,7 @@ public class Triangle extends TriangleCatalog{
      * @param toCompare - the triangle object to compare to
      * @return true if any values are different, otherwise false.
      */
-    boolean isDifferent(Triangle toCompare) {
+    public boolean isDifferent(Triangle toCompare) {
     	if(getInfo("hyp").equals(toCompare.getInfo("hyp"))
     		&& getInfo("opp").equals(toCompare.getInfo("opp"))
 			&& getInfo("adj").equals(toCompare.getInfo("adj"))

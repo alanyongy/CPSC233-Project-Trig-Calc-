@@ -25,20 +25,20 @@ import javafx.stage.Stage;
  */
 public class GUIController {
 	//stored reference to stage of program (set in Main)
-	Stage applicationStage;
+	public Stage applicationStage;
 	
 	//stored reference to the main scene when swapping to other scenes (set in Main)
-	Scene mainScene;
+	public Scene mainScene;
 	
 	/**Index of the currently highlighted canvas panel in the list of triangles*/
-	int highlightedPanelIndex = 0;
+	private int highlightedPanelIndex = 0;
 	
     /**Reference to a Triangle object that the controller is currently working with*/
-    Triangle triangle;
+	private Triangle triangle;
     
     /**Instance of TriangleCatalog object which contains a list of triangles and specialized 
    	methods to validate, manage, and perform operations on that list.*/
-	TriangleCatalog triangleCatalog = new TriangleCatalog();
+	private TriangleCatalog triangleCatalog = new TriangleCatalog();
 	
     @FXML private TextField hypotenuseTextField, adjacentTextField, oppositeTextField, angleThetaTextField;
     @FXML private ToggleButton degreesToggleButton, radiansToggleButton, valueToggleButton, formulaToggleButton;
@@ -736,9 +736,14 @@ public class GUIController {
 				+ "\n\nFormula: \nSolves for transformative algebraic formulas. Useful for figuring out what "
 				+ "formulas to use in your programming projects. For example, entering distance(a,b) and "
 				+ "a.getX()-b.getX() for the hypotenuse and adjacent respectively to find an algebraic formula "
-				+ "for getting the angle between the two objects.");
+				+ "for getting the angle between the two objects. \n\nA catalog of triangles you create will "
+				+ "be available for you to easily switch between multiple right triangles. You may navigate "
+				+ "between the created triangles using the Next and Previous buttons, as well as by "
+				+ "clicking on the panels in the catalog. Triangles can also be deleted by clicking the X in "
+				+ "the top right of the triangle panel in the catalog. \n\nAdd Random Triangle: \nCreates a "
+				+ "triangle using randomize values.\n\nDelete All: Clears the catalog of all triangles.");
 		infoLabel.setWrapText(true);
-		infoLabel.setFont(new Font(15));
+		infoLabel.setFont(new Font(13));
 		
 		//creating a VBox and adding the above two labels to it
 		VBox labelBox = new VBox();
@@ -784,10 +789,11 @@ public class GUIController {
 		
 		//creating a label with the bulk of the information intended to be conveyed on this scene
 		Label infoLabel = new Label("Entered values which do not meet these requirements will be "
-				+ "accompanied with an error message. \n\nValue Mode:\nAll values may include a decimal "
-				+ "for increased precision. \nHypotenuse: Positive values only. \nOpposite: Positive or "
-				+ "negative values. \nAdjacent: Positive or negative values. \nAngle θ: Positive values "
-				+ "only. Must be under 90° in Degrees mode, or π/2 in Radians mode.\n\nFormula Mode: "
+				+ "accompanied with an error message. Click Back to Info. to see more about Value mode and "
+				+ "Formula mode. \n\nValue Mode:\nAll values may include a decimal "
+				+ "for increased precision. \n\nHypotenuse: Positive values only. \n\nOpposite: Positive or "
+				+ "negative values. \n\nAdjacent: Positive or negative values. \n\nAngle θ: Positive values "
+				+ "only. Must be under 90° in Degrees mode, or π/2 in Radians mode.\n\n\n\nFormula Mode: "
 				+ "\nAll entries are valid." );
 		infoLabel.setWrapText(true);
 		infoLabel.setFont(new Font(17));

@@ -33,7 +33,7 @@ public class FormulaTriangle extends Triangle {
 	 * @param angleModeDegrees - degree mode (degrees if true, radians if false) of value entered for theta
 	 */
     @Override
-	void calculateMissingValues(double hyp, double opp, double adj, double ang, boolean angleModeDegrees) {
+	protected void calculateMissingValues(double hyp, double opp, double adj, double ang, boolean angleModeDegrees) {
 		String solveMethod = "";
 		String hypInput = getInfo("HypotenuseInput");
 		String oppInput = getInfo("OppositeInput");
@@ -88,7 +88,7 @@ public class FormulaTriangle extends Triangle {
 	 * @return String value describing the error causing the input to be invalid (empty string if no error) 
 	 */
 	@Override
-    String checkError(String textField, String text, boolean degreesMode) {
+    protected String checkError(String textField, String text, boolean degreesMode) {
     	return getErrorDescription();
     }
 	
@@ -98,7 +98,7 @@ public class FormulaTriangle extends Triangle {
 	 * validated user input. These are the final values that will be assigned to the labels and displayed to the user.
 	 */
 	@Override
-	void storeInfoInHashMap(){
+	protected void storeInfoInHashMap(){
 		if(!getInfo("HypotenuseInput").isEmpty()) setInfo("hyp", getInfo("HypotenuseInput"));
 		if(!getInfo("OppositeInput").isEmpty()) setInfo("opp", getInfo("OppositeInput"));
 		if(!getInfo("AdjacentInput").isEmpty()) setInfo("adj", getInfo("AdjacentInput"));
