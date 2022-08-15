@@ -17,7 +17,7 @@
    <content>
       <HBox>
          <children>
-	         	<ScrollPane hbarPolicy="NEVER" maxHeight="350.0" minHeight="350.0" vbarPolicy="ALWAYS">
+	         	<ScrollPane hbarPolicy="NEVER" maxHeight="360.0" minHeight="350.0" vbarPolicy="ALWAYS">
 	               <HBox.margin>
 	                  <Insets bottom="10.0" left="10.0" right="10.0" top="220.0" />
 	               </HBox.margin>
@@ -32,7 +32,7 @@
 	                      </font>
 	                      </Button>
                      <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#clearTriangleList" prefWidth="80" text="Delete All" textAlignment="CENTER" wrapText="true" />
-	                      <VBox fx:id="canvasPanelVBox" minHeight="1.0" prefWidth="80.0" spacing="2.0">
+	                      <VBox fx:id="guiCatalogVBox" minHeight="1.0" prefWidth="80.0" spacing="2.0">
 		                     <children>
 		                     </children>
 		                  </VBox>
