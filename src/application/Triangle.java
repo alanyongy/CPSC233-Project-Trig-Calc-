@@ -147,7 +147,7 @@ public class Triangle {
     			|| Double.parseDouble(text) == 0) {
     		
     		//checks which above condition was violated, and sets the errorLabel message to an appropriate message.
-    		if (textField == "Angle θ") errorDescription = " must be less than 90° or π/2";
+    		if (textField == "Angle θ") errorDescription = " must be less than 90° or π/2 (~1.57)";
     		else if(dotCount > 1) errorDescription = " can only contain one decimal point.";
     		else if(dashCount > 1) errorDescription = " can only contain one negative sign.";
     		else if(otherCount >= 1) errorDescription = " can only contain digits, decimals or neg. signs.";
@@ -424,8 +424,8 @@ public class Triangle {
 	 * Setter method for Hyp (hypotenuse) side length of triangle
 	 * @param value of hypotenuse side length to set to triangle object
 	 */
-	public void setHyp(double h) {
-		this.hyp = h;
+	public void setHyp(double hypToSet) {
+		this.hyp = hypToSet;
 	}
 
 	/**
@@ -440,8 +440,8 @@ public class Triangle {
 	 * Setter method for Opp (opposite) side length of triangle
 	 * @param opposite side length value of triangle object
 	 */
-	public void setOpp(double o) {
-		this.opp = o;
+	public void setOpp(double oppToSet) {
+		this.opp = oppToSet;
 	}
 
 	/**
@@ -456,8 +456,8 @@ public class Triangle {
 	 * Setter method for Adj (adjacent) side length of triangle
 	 * @param adjacent side length value of triangle object
 	 */
-	public void setAdj(double a) {
-		this.adj = a;
+	public void setAdj(double adjToSet) {
+		this.adj = adjToSet;
 	}
 	
 	/**
@@ -518,12 +518,12 @@ public class Triangle {
 	
 	/**
 	 * Getter method for the info hashmap of the triangle.
-	 * @param key - key in the hashmap to retrieve the value of.
+	 * @param keyToGet - key in the hashmap to retrieve the value of.
 	 * @return value of the string variable stored at key location in hashmap
 	 * @implNote This method is overloaded - see getInfo()
 	 */
-	public String getInfo(String key) {
-		String newStr = new String(info.get(key));
+	public String getInfo(String keyToGet) {
+		String newStr = new String(info.get(keyToGet));
 		return newStr;
 	}
 	
@@ -540,12 +540,12 @@ public class Triangle {
 	
 	/**
 	 * Setter method for the info hashmap of the triangle
-	 * @param key - key in the hashmap to set the value of.
-	 * @param value - value to set the key in the hashmap to.
+	 * @param keyToSet - key in the hashmap to set the value of.
+	 * @param valueToSetAtKey - value to set the key in the hashmap to.
 	 */
-	public void setInfo(String key, String value) {
+	public void setInfo(String keyToSet, String valueToSetAtKey) {
 		HashMap<String, String> newInfo = new HashMap<String, String>(info);
-		newInfo.put(key, value);
+		newInfo.put(keyToSet, valueToSetAtKey);
 		info = newInfo;
 	}
 }

@@ -40,6 +40,7 @@ public class GUIController {
    	methods to validate, manage, and perform operations on that list.*/
 	private TriangleCatalog triangleCatalog = new TriangleCatalog();
 	
+	//fxml file nodes
     @FXML private TextField hypotenuseTextField, adjacentTextField, oppositeTextField, angleThetaTextField;
     @FXML private ToggleButton degreesToggleButton, radiansToggleButton, valueToggleButton, formulaToggleButton;
 	@FXML private Button informationButton, nextButton, previousButton;

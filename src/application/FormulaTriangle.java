@@ -72,7 +72,7 @@ public class FormulaTriangle extends Triangle {
 		//opposite and adjacent, so that a triangle may be drawn later to be labeled.
 		setOpp(1);
 		setAdj(1);
-		setHyp(Math.sqrt(opp*opp + adj*adj));
+		setHyp(Math.sqrt(getOpp()*getOpp() + getAdj()*getAdj()));
 		
 		//we can store the solve method here since it does not
 		//need additional formatting or checks to be displayed to the user
